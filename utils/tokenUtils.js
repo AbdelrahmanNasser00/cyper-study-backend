@@ -9,7 +9,7 @@ const generateToken = (user) => {
       role: user.role,
     },
     tokenKey,
-    { expiresIn: "24h" }
+    { expiresIn: "24d" }
   );
 };
 

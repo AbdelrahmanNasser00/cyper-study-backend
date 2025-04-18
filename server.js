@@ -6,6 +6,7 @@ require("dotenv").config();
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth.routes");
 const courseRoutes = require("./routes/courses.routes");
+const lessonRoutes = require("./routes/lesson.routes");
 const morgan = require("morgan");
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -16,7 +17,7 @@ app.use(cors());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
-
+app.use("/api/lessons", lessonRoutes);
 const testConnection = async () => {
   try {
     await sequelize.authenticate();

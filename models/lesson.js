@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       content: DataTypes.TEXT,
       order: { type: DataTypes.INTEGER, allowNull: false },
       duration: DataTypes.INTEGER,
+      
       isPreview: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {
