@@ -1,6 +1,5 @@
 const db = require("../models");
-const { User } = db;
-// const Course = require("../models/course");
+const { User, Course } = db;
 // const Category = require("../models/category");
 // const Order = require("../models/order");
 // const OrderItem = require("../models/orderItem");
@@ -20,7 +19,7 @@ const tokenUtils = require("../utils/tokenUtils");
 
 // Controllers
 const AuthController = require("../controllers/auth.controller");
-// const CourseController = require("../controllers/course.controller");
+const CourseController = require("../controllers/course.controller");
 // const CategoryController = require("../controllers/category.controller");
 // const OrderController = require("../controllers/order.controller");
 // const EnrollmentController = require("../controllers/enrollment.controller");
@@ -34,7 +33,7 @@ const AuthController = require("../controllers/auth.controller");
 
 // Services
 const AuthService = require("../services/auth.service");
-// const CourseService = require("../services/course.service");
+const CourseService = require("../services/course.service");
 // const UserService = require("../services/user.service");
 // const CategoryService = require("../services/category.service");
 // const OrderService = require("../services/order.service");
@@ -57,9 +56,11 @@ class DIContainer {
         tokenUtils,
         AppErrors
       );
+      this.courseService = new CourseService(Course, AppErrors);
 
       // Controllers
       this.authController = new AuthController(this.authService);
+      this.courseController = new CourseController(this.courseService);
 
       DIContainer.instance = this;
     }
