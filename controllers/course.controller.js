@@ -3,6 +3,20 @@ class CourseController {
     this.courseService = courseService;
   }
 
+  // Instructor
+  createCourse = async (req, res, next) => {
+    try {
+      const course = await this.courseService.createCourse(
+        req.body,
+        req.user.id
+      );
+      res.status(201).json(course);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
+
   getInstructorCourses = async (req, res, next) => {
     try {
       const courses = await this.courseService.getInstructorCourses(
@@ -14,10 +28,13 @@ class CourseController {
     }
   };
 
-  createCourse = async (req, res, next) => {
+  getInstructorCourseById = async (req, res, next) => {
     try {
-      const course = await this.courseService.createCourse(req.body);
-      res.status(201).json(course);
+      const course = await this.courseService.getInstructorCourseById(
+        req.params.id,
+        req.user.id
+      );
+      res.status(200).json(course);
     } catch (error) {
       next(error);
     }
@@ -35,18 +52,64 @@ class CourseController {
     }
   };
 
-  getCourseById = async (req, res, next) => {
+  deleteCourse = async (req, res, next) => {
     try {
-      const course = await this.courseService.getCourseById(req.params.id);
+      const course = await this.courseService.deleteCourse(req.params.id);
       res.status(200).json(course);
     } catch (error) {
       next(error);
     }
   };
 
-  getCourses = async (req, res, next) => {
+  // Student
+  getStudentEnrolledCourses = async (req, res, next) => {
+    try {
+      const courses = await this.courseService.getStudentEnrolledCourses(
+        req.user.id
+      );
+      res.status(200).json(courses);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  // General
+  getCourseById = async (req, res, next) => {
+    try {
+      const userId = req.user ? req.user.id : null;
+      const course = await this.courseService.getCourseById(
+        req.params.id,
+        userId
+      );
+      res.status(200).json(course);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getAllCourses = async (req, res, next) => {
     try {
       const courses = await this.courseService.getAllCourses();
+      res.status(200).json(courses);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  searchCourses = async (req, res, next) => {
+    try {
+      const courses = await this.courseService.searchCourses(req.query);
+      res.status(200).json(courses);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getCoursesByCategory = async (req, res, next) => {
+    try {
+      const courses = await this.courseService.getCoursesByCategory(
+        req.params.category
+      );
       res.status(200).json(courses);
     } catch (error) {
       next(error);
