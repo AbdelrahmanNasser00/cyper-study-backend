@@ -6,11 +6,10 @@ class WishlistService {
   }
 
   async getWishlist(userId) {
-    const existing = await this.WishlistModel.findOne({
-      where: { userId, courseId },
+    const wishlist = await this.WishlistModel.findAll({
+      where: { userId },
     });
-    if (existing) throw new this.AppErrors("Course already in wishlist", 400);
-    const wishlist = await this.WishlistModel.create({ userId, courseId });
+
     return wishlist;
   }
 
@@ -24,8 +23,6 @@ class WishlistService {
       where: { userId, courseId },
     });
     if (existing) throw new this.AppErrors("Course already in wishlist", 400);
-
-    console.log("WishlistModel Attributes:", this.WishlistModel.rawAttributes);
 
     const wishlistItem = await this.WishlistModel.create({ userId, courseId });
     return wishlistItem;

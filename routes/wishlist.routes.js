@@ -22,9 +22,8 @@ router.post(
 );
 router.delete(
   "/:id",
-  validator.body(wishlistSchema),
-  authorize(["student"]),
   authenticate,
+  authorize(["student"]),
   wishlistController.removeCourseFromWishlist
 );
 

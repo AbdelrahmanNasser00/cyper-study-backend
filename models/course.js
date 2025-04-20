@@ -8,8 +8,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Course.belongsTo(models.User, { as: "instructor", foreignKey: "instructorId" });
-     
+      Course.belongsTo(models.User, {
+        as: "instructor",
+        foreignKey: "instructorId",
+      });
+
       Course.belongsTo(models.Category, { foreignKey: "categoryId" });
       Course.hasMany(models.Lesson, { foreignKey: "courseId" });
       Course.hasMany(models.Coupon, { foreignKey: "courseId" });
@@ -21,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       Course.belongsToMany(models.User, {
         through: models.Wishlist,
         foreignKey: "courseId",
+        otherKey: "userId",
       });
       Course.belongsToMany(models.User, {
         through: models.Review,
@@ -34,7 +38,6 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Certificate,
         foreignKey: "courseId",
       });
-      
     }
   }
   Course.init(
