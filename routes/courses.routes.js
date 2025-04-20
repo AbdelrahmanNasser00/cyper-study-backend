@@ -68,7 +68,7 @@ router.post(
 
 /**
  * @swagger
- * /api/courses:
+ * /api/courses/my-courses:
  *   get:
  *     summary: Get all courses for the logged-in instructor
  *     tags: [Courses]
@@ -89,7 +89,7 @@ router.get(
 
 /**
  * @swagger
- * /courses/my-courses/{id}:
+ * /api/courses/my-courses/{id}:
  *   get:
  *     summary: Get a specific course by ID for the logged-in instructor
  *     tags: [Courses]
@@ -117,12 +117,83 @@ router.get(
   courseController.getInstructorCourseById
 );
 
+/**
+ * @swagger
+ * /api/courses/my-courses/{id}:
+ *   put:
+ *     summary: Update a course
+ *     tags: [Courses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               categoryId:
+ *                 type: number
+ *               thumbnail:
+ *                 type: string
+ *                 format: url
+ *               level:
+ *                 type: string
+ *               duration:
+ *                 type: number
+ *               isPublished:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Course updated successfully
+ *       404:
+ *         description: Course not found
+ *       401:
+ *         description: Unauthorized
+ */
 router.put(
   "/my-courses/:id",
   authenticate,
   authorize(["instructor"]),
   courseController.updateCourse
 );
+
+/**
+ * @swagger
+ * /api/courses/my-courses/{id}:
+ *   delete:
+ *     summary: Delete a course
+ *     tags: [Courses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *     responses:
+ *       200:
+ *         description: Course deleted successfully
+ *       404:
+ *         description: Course not found
+ *       401:
+ *         description: Unauthorized
+ */
 router.delete(
   "/my-courses/:id",
   authenticate,
@@ -131,6 +202,20 @@ router.delete(
 );
 
 // Student Routes
+/**
+ * @swagger
+ * /api/courses/my-enrollments:
+ *   get:
+ *     summary: Get all enrolled courses for the logged-in student
+ *     tags: [Courses]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of enrolled courses
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   "/my-enrollments",
   authenticate,
@@ -138,17 +223,76 @@ router.get(
   courseController.getStudentEnrolledCourses
 );
 
-// router.get(
-//   "/my-enrollments/:id",
-//   authenticate,
-//   authorize(["student"]),
-//   courseController.getEnrollmentById
-// );
-
 // General Routes
+/**
+ * @swagger
+ * /api/courses:
+ *   get:
+ *     summary: Get all courses
+ *     tags: [Courses]
+ *     responses:
+ *       200:
+ *         description: List of all courses
+ */
 router.get("/", courseController.getAllCourses);
+
+/**
+ * @swagger
+ * /api/courses/{id}:
+ *   get:
+ *     summary: Get a course by ID
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *     responses:
+ *       200:
+ *         description: Course details
+ *       404:
+ *         description: Course not found
+ */
 router.get("/:id", courseController.getCourseById);
+
+/**
+ * @swagger
+ * /api/courses/search:
+ *   get:
+ *     summary: Search for courses
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Search query
+ *     responses:
+ *       200:
+ *         description: List of matching courses
+ */
 router.get("/search", courseController.searchCourses);
+
+/**
+ * @swagger
+ * /api/courses/category/{category}:
+ *   get:
+ *     summary: Get courses by category
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: path
+ *         name: category
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Category name
+ *     responses:
+ *       200:
+ *         description: List of courses in the category
+ */
 router.get("/category/:category", courseController.getCoursesByCategory);
 
 module.exports = router;

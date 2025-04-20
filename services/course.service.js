@@ -17,11 +17,25 @@ class CourseService {
     this.AppErrors = AppErrors;
   }
   async createCourse(data, instructorId) {
+    // Check if a course with the same title and instructor already exists
+    const existingCourse = await this.CourseModel.findOne({
+      where: {
+        title: data.title,
+        instructorId,
+      },
+    });
+
+    if (existingCourse) {
+      throw new this.AppErrors("A course with this title already exists for this instructor", 400);
+    }
+
+    // Create the course if it doesn't exist
     const course = await this.CourseModel.create({
       ...data,
       instructorId,
       isPublished: false,
     });
+
     console.log(course);
     return course;
   }

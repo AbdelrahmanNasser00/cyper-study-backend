@@ -12,7 +12,7 @@ class CourseController {
       );
       res.status(201).json({
         message:"course created successfully.",
-        data:{...course}
+        course
         });
     } catch (error) {
       console.log(error);
