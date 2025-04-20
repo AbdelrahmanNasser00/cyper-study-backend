@@ -1,5 +1,5 @@
 const db = require("../models");
-const { User, Course, Lesson, Enrollment, Category } = db;
+const { User, Course, Lesson, Enrollment, Category, Wishlist } = db;
 // const Category = require("../models/category");
 // const Order = require("../models/order");
 // const OrderItem = require("../models/orderItem");
@@ -21,10 +21,10 @@ const tokenUtils = require("../utils/tokenUtils");
 const AuthController = require("../controllers/auth.controller");
 const CourseController = require("../controllers/course.controller");
 const LessonController = require("../controllers/lesson.controller");
- const CategoryController = require("../controllers/category.controller");
+const CategoryController = require("../controllers/category.controller");
+
 // const OrderController = require("../controllers/order.controller");
 // const EnrollmentController = require("../controllers/enrollment.controller");
-// const WishlistController = require("../controllers/wishlist.controller");
 // const ReviewController = require("../controllers/review.controller");
 // const CartController = require("../controllers/cart.controller");
 // const CertificateController = require("../controllers/certificate.controller");
@@ -37,12 +37,13 @@ const AuthService = require("../services/auth.service");
 const CategoryService = require("../services/category.service");
 const CourseService = require("../services/course.service");
 const LessonService = require("../services/lesson.service");
+const WishlistService = require("../services/wishlist.service");
+const WishlistController = require("../controllers/wishlist.controller");
 
 // const UserService = require("../services/user.service");
 
 // const OrderService = require("../services/order.service");
 // const EnrollmentService = require("../services/enrollment.service");
-// const WishlistService = require("../services/wishlist.service");
 // const ReviewService = require("../services/review.service");
 // const CartService = require("../services/cart.service");
 // const CertificateService = require("../services/certificate.service");
@@ -69,13 +70,15 @@ class DIContainer {
         AppErrors
       );
       this.lessonService = new LessonService(Lesson, AppErrors);
-      this.categoryService= new CategoryService(Category, AppErrors);
+      this.categoryService = new CategoryService(Category, AppErrors);
+      this.wishlistService = new WishlistService(Wishlist, Course, AppErrors);
 
       // Controllers
       this.authController = new AuthController(this.authService);
       this.courseController = new CourseController(this.courseService);
       this.lessonController = new LessonController(this.lessonService);
       this.categoryController = new CategoryController(this.categoryService);
+      this.wishlistController = new WishlistController(this.wishlistService);
 
       DIContainer.instance = this;
     }

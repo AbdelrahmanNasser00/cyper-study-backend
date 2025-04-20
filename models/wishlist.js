@@ -9,7 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Wishlist.belongsTo(models.User, { foreignKey: "userId" });
-      Wishlist.belongsTo(models.Course, { foreignKey: "courseId" });
+      Wishlist.belongsTo(models.Course, {
+        foreignKey: "courseId",
+      });
     }
   }
   Wishlist.init(
@@ -21,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Wishlist",
-      tableName: "Wishlist",
+      tableName: "Wishlists",
       timestamps: false,
       indexes: [{ unique: true, fields: ["userId", "courseId"] }],
     }
