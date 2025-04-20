@@ -3,10 +3,13 @@ require("express-async-errors");
 const cors = require("cors");
 
 require("dotenv").config();
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocs = require("./docs/swagger");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth.routes");
 const courseRoutes = require("./routes/courses.routes");
 const lessonRoutes = require("./routes/lesson.routes");
+const categoryRoutes = require("./routes/category.routes");
 const morgan = require("morgan");
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -15,9 +18,13 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 
+app.use("/api-docs", swaggerUi.serve,
+ swaggerUi.setup(swaggerDocs));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/lessons", lessonRoutes);
+app.use("/api/categories", categoryRoutes);
 const testConnection = async () => {
   try {
     await sequelize.authenticate();

@@ -10,7 +10,10 @@ class CourseController {
         req.body,
         req.user.id
       );
-      res.status(201).json(course);
+      res.status(201).json({
+        message:"course created successfully.",
+        data:{...course}
+        });
     } catch (error) {
       console.log(error);
       next(error);

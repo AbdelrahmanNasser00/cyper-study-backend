@@ -9,7 +9,29 @@ router.post(
   validator.body(registerSchema),
   authController.register
 );
-
+/**
+ * @swagger
+ * /api/auth:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: user
+ *       401:
+ *         description: Invalid email or password
+ */
 router.post("/login", validator.body(loginSchema), authController.login);
 
 module.exports = router;
