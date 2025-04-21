@@ -31,7 +31,10 @@ class LessonService {
     }
   
     async createLesson(data) {
-      const lesson = await this.LessonModel.create(data);
+      console.log(data)
+      const lesson = await this.LessonModel.create({
+        ...data});
+
       return lesson;
     }
   

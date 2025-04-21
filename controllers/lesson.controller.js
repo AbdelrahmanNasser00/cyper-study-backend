@@ -5,7 +5,7 @@ class LessonController {
 
   getLessonById=async (req, res, next)=> {
     try {
-      const lesson = await lessonService.getLessonById(req.params.id);
+      const lesson = await this.lessonService.getLessonById(req.params.id);
       res.status(200).json(lesson);
     } catch (err) {
       next(err);
@@ -28,7 +28,7 @@ class LessonController {
 
   createLesson= async(req, res, next)=> {
     try {
-      const lesson = await lessonService.createLesson(req.body);
+      const lesson = await this.lessonService.createLesson(req.body);
       res.status(201).json(lesson);
     } catch (err) {
       next(err);
@@ -37,7 +37,7 @@ class LessonController {
 
    updateLesson= async(req, res, next)=> {
     try {
-      const lesson = await lessonService.updateLesson(req.params.id, req.body);
+      const lesson = await this.lessonService.updateLesson(req.params.id, req.body);
       res.status(200).json(lesson);
     } catch (err) {
       next(err);
@@ -45,7 +45,7 @@ class LessonController {
   }
  deleteLesson= async(req, res, next)=> {
     try {
-      await lessonService.deleteLesson(req.params.id);
+      await this.lessonService.deleteLesson(req.params.id);
       res.status(204).send(); 
     } catch (err) {
       next(err);
@@ -53,7 +53,7 @@ class LessonController {
   }
   markLessonAsCompleted= async(req, res, next)=> {
     try {
-      const lesson = await lessonService.markLessonAsCompleted(req.params.id);
+      const lesson = await this.lessonService.markLessonAsCompleted(req.params.id);
       res.status(200).json(lesson);
     } catch (err) {
       next(err);

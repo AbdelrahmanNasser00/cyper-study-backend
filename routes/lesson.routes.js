@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
+const validator = require("express-joi-validation").createValidator({});
+const lessonSchema = require("../validation/lesson.validation");
 const { lessonController } = require("../config/DIContainer");
 const authenticate = require("../middlewares/authenticate.middleware");
 const authorize = require("../middlewares/role.middleware");
@@ -87,23 +88,43 @@ router.get(
  *           schema:
  *             type: object
  *             properties:
- *               title:
- *                 type: string
- *               content:
- *                 type: string
  *               courseId:
  *                 type: integer
+ *                 description: ID of the course the lesson belongs to
+ *                 example: 1
+ *               title:
+ *                 type: string
+ *                 description: Title of the lesson
+ *                 example: "Introduction to JavaScript"
+ *               videoUrl:
+ *                 type: string
+ *                 description: URL of the lesson video
+ *                 example: "https://example.com/video.mp4"
+ *               content:
+ *                 type: string
+ *                 description: Content or description of the lesson
+ *                 example: "This lesson covers the basics of JavaScript."
+ *               order:
+ *                 type: integer
+ *                 description: Order of the lesson in the course
+ *                 example: 1
+ *               duration:
+ *                 type: integer
+ *                 description: Duration of the lesson in minutes
+ *                 example: 15
  *             required:
- *               - title
- *               - content
  *               - courseId
+ *               - title
+ *               - order
  *     responses:
  *       201:
  *         description: Lesson created successfully
+ *         content:
+ *           lesson
  *       400:
  *         description: Validation error
  */
-router.post("/", authenticate, authorize(["instructor"]), lessonController.createLesson);
+router.post("/", authenticate, authorize(["instructor"]),validator.body(lessonSchema) ,lessonController.createLesson);
 
 /**
  * @swagger
