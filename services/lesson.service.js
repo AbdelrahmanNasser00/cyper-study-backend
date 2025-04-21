@@ -1,7 +1,10 @@
+const { Op } = require("sequelize");
+
 class LessonService {
-    constructor(LessonModel, AppErrors) {
+    constructor(LessonModel, AppErrors, sequelize) {
       this.LessonModel = LessonModel;
       this.AppErrors = AppErrors;
+      this.sequelize = sequelize;
     }
   
     async getLessonById(id) {
@@ -12,12 +15,19 @@ class LessonService {
       return lesson;
     }
   
-    async getLessonsByCourse(courseId) {
-      const lessons = await this.LessonModel.findAll({
+    async getLessonsByCourse(courseId, limit, offset) {
+      const lessons = await this.LessonModel.findAndCountAll({
         where: { courseId },
         order: [["order", "ASC"]],
+        limit: parseInt(limit),
+        offset: parseInt(offset),
       });
-      return lessons;
+  
+      return {
+        total: lessons.count,
+        pageCount: Math.ceil(lessons.count / limit),
+        lessons: lessons.rows,
+      };
     }
   
     async createLesson(data) {
@@ -42,6 +52,7 @@ class LessonService {
       await lesson.destroy();
       return lesson;
     }
+
     async markLessonAsCompleted(id){
       const lesson=await this.LessonModel.findByPk(id);
       if (!lesson) {
@@ -49,10 +60,39 @@ class LessonService {
       }
       await lesson.update({isPreview:true});
       return lesson;
+    }
 
+    async searchLessons(query) {
+      const lessons = await this.LessonModel.findAll({
+        where: {
+          [Op.or]: [
+            { title: { [Op.like]: `%${query}%` } },
+            { content: { [Op.like]: `%${query}%` } },
+          ],
+        },
+        order: [["title", "ASC"]],
+      });
+    
+      return lessons;
+    }
 
+    async reorderLessons(courseId, order) {
+      const transaction = await this.sequelize.transaction();
+    
+      try {
+        for (let i = 0; i < order.length; i++) {
+          await this.LessonModel.update(
+            { order: i + 1 },
+            { where: { id: order[i], courseId }, transaction }
+          );
+        }
+    
+        await transaction.commit();
+      } catch (err) {
+        await transaction.rollback();
+        throw new this.AppErrors("Failed to reorder lessons", 500);
+      }
     }
   }
   
   module.exports = LessonService;
-  

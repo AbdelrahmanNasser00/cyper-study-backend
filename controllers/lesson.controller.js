@@ -1,4 +1,3 @@
-
 class LessonController {
     constructor(lessonService) {
       this.lessonService = lessonService;
@@ -15,7 +14,12 @@ class LessonController {
 
    getLessonsByCourse=async (req, res, next) =>{
     try {
-      const lessons = await lessonService.getLessonsByCourse(req.params.courseId);
+      const { courseId } = req.params;
+      const { page = 1, limit = 10 } = req.query; // Default to page 1 and 10 lessons per page
+
+      const offset = (page - 1) * limit;
+      const lessons = await this.lessonService.getLessonsByCourse(courseId, limit, offset);
+
       res.status(200).json(lessons);
     } catch (err) {
       next(err);
@@ -55,6 +59,30 @@ class LessonController {
       next(err);
     }
   }
+
+  searchLessons = async (req, res, next) => {
+    try {
+      const { query } = req.query; // Search query
+      const lessons = await this.lessonService.searchLessons(query);
+
+      res.status(200).json(lessons);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  reorderLessons = async (req, res, next) => {
+    try {
+      const { courseId } = req.params;
+      const { order } = req.body; // Array of lesson IDs in the desired order
+
+      await this.lessonService.reorderLessons(courseId, order);
+
+      res.status(200).json({ message: "Lessons reordered successfully" });
+    } catch (err) {
+      next(err);
+    }
+  };
 };
 
 module.exports = LessonController;

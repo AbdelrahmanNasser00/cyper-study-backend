@@ -33,7 +33,7 @@ class CourseService {
     const course = await this.CourseModel.create({
       ...data,
       instructorId,
-      isPublished: false,
+      
     });
 
     console.log(course);
@@ -42,7 +42,7 @@ class CourseService {
 
   async getInstructorCourses(instructorId) {
     const courses = await this.CourseModel.findAll({
-      where: { instructorId },
+      where: { instructorId  },
     });
     return courses;
   }
