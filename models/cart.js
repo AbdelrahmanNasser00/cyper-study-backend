@@ -16,13 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     {
       userId: { type: DataTypes.INTEGER, allowNull: false },
       courseId: { type: DataTypes.INTEGER, allowNull: false },
-      addedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     },
     {
       sequelize,
       modelName: "Cart",
       tableName: "Cart",
-      timestamps: false,
+      timestamps: true,
       indexes: [{ unique: true, fields: ["userId", "courseId"] }],
     }
   );

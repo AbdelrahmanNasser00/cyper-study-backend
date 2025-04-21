@@ -17,13 +17,12 @@ module.exports = (sequelize, DataTypes) => {
       userId: { type: DataTypes.INTEGER, allowNull: false },
       courseId: { type: DataTypes.INTEGER, allowNull: false },
       progress: { type: DataTypes.DECIMAL(5, 2), defaultValue: 0.0 },
-      enrolledAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     },
     {
       sequelize,
       modelName: "Enrollment",
       tableName: "Enrollments",
-      timestamps: false,
+      timestamps: true,
       indexes: [{ unique: true, fields: ["userId", "courseId"] }],
     }
   );

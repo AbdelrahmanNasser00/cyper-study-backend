@@ -30,6 +30,14 @@ module.exports = {
         onDelete: "CASCADE",
       },
       price: { type: Sequelize.DECIMAL(10, 2), allowNull: false },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
