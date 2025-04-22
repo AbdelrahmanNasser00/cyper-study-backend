@@ -31,6 +31,7 @@ class LessonController {
       const lesson = await this.lessonService.createLesson(req.body);
       res.status(201).json(lesson);
     } catch (err) {
+      console.log(err)
       next(err);
     }
   }

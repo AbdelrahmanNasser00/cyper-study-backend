@@ -17,6 +17,14 @@ module.exports = (sequelize, DataTypes) => {
       discount: { type: DataTypes.DECIMAL(5, 2), allowNull: false },
       courseId: DataTypes.INTEGER,
       expiresAt: DataTypes.DATE,
+      usageLimit: {
+        type: DataTypes.INTEGER,
+        allowNull: true, // Nullable for unlimited usage
+      },
+      timesUsed: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
     },
     {
       sequelize,

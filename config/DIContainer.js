@@ -1,5 +1,5 @@
 const db = require("../models");
-const { User, Course, Lesson, Enrollment, Category, Wishlist } = db;
+const { User, Course, Lesson, Enrollment, Category, Wishlist,Coupon } = db;
 // const Category = require("../models/category");
 // const Order = require("../models/order");
 // const OrderItem = require("../models/orderItem");
@@ -22,7 +22,7 @@ const AuthController = require("../controllers/auth.controller");
 const CourseController = require("../controllers/course.controller");
 const LessonController = require("../controllers/lesson.controller");
 const CategoryController = require("../controllers/category.controller");
-
+const WishlistController = require("../controllers/wishlist.controller");
 // const OrderController = require("../controllers/order.controller");
 // const EnrollmentController = require("../controllers/enrollment.controller");
 // const ReviewController = require("../controllers/review.controller");
@@ -30,7 +30,7 @@ const CategoryController = require("../controllers/category.controller");
 // const CertificateController = require("../controllers/certificate.controller");
 // const NotificationController = require("../controllers/notification.controller");
 // const PaymentController = require("../controllers/payment.controller");
-// const CouponController = require("../controllers/coupon.controller");
+const CouponController = require("../controllers/coupon.controller");
 
 // Services
 const AuthService = require("../services/auth.service");
@@ -38,7 +38,7 @@ const CategoryService = require("../services/category.service");
 const CourseService = require("../services/course.service");
 const LessonService = require("../services/lesson.service");
 const WishlistService = require("../services/wishlist.service");
-const WishlistController = require("../controllers/wishlist.controller");
+const couponService = require("../services/coupon.service");
 
 // const UserService = require("../services/user.service");
 
@@ -49,7 +49,7 @@ const WishlistController = require("../controllers/wishlist.controller");
 // const CertificateService = require("../services/certificate.service");
 // const NotificationService = require("../services/notification.service");
 // const PaymentService = require("../services/payment.service");
-// const CouponService = require("../services/coupon.service");
+
 
 class DIContainer {
   constructor() {
@@ -72,6 +72,11 @@ class DIContainer {
       this.lessonService = new LessonService(Lesson, AppErrors);
       this.categoryService = new CategoryService(Category, AppErrors);
       this.wishlistService = new WishlistService(Wishlist, Course, AppErrors);
+      this.couponService = new couponService(
+        Coupon ,
+        AppErrors
+      
+      );
 
       // Controllers
       this.authController = new AuthController(this.authService);
@@ -79,7 +84,7 @@ class DIContainer {
       this.lessonController = new LessonController(this.lessonService);
       this.categoryController = new CategoryController(this.categoryService);
       this.wishlistController = new WishlistController(this.wishlistService);
-
+      this.couponController= new CouponController(this.couponService);
       DIContainer.instance = this;
     }
     return DIContainer.instance;
