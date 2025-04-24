@@ -87,6 +87,7 @@ class DIContainer {
         CartItems,
         Course,
         Category,
+        User,
         AppErrors
       );
       this.couponService = new couponService(Coupon, AppErrors);

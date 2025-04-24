@@ -6,6 +6,7 @@ class CartService {
     CartItemsModel,
     CourseModel,
     CategoryModel,
+    UserModel,
     AppErrors
   ) {
     this.CartModel = CartModel;
@@ -13,17 +14,19 @@ class CartService {
     this.CartItemsModel = CartItemsModel;
     this.CourseModel = CourseModel;
     this.CategoryModel = CategoryModel;
+    this.UserModel = UserModel;
   }
 
   async getCart(userId) {
     const cart = await this.CartModel.findOne({ where: { userId } });
     if (!cart) return { totalPrice: 0.0, items: [] };
 
-    const items = await this.CourseModel.findAll({
+    const courses = await this.CourseModel.findAll({
       include: [
         {
           model: this.CartItemsModel,
           where: { cartId: cart.id },
+          attributes: ["id", "coursePrice", "createdAt"],
         },
         {
           model: this.UserModel,
@@ -37,11 +40,28 @@ class CartService {
       ],
       where: { isPublished: true },
     });
+
+    const items = courses.map((course) => ({
+      id: course.id,
+      title: course.title,
+      description: course.description,
+      price: parseFloat(course.price),
+      thumbnail: course.thumbnail,
+      level: course.level,
+      duration: course.duration,
+      instructor: `${course.instructor.firstname} ${course.instructor.lastname}`,
+      category: course.Category.name,
+      cartItem: {
+        id: course.CartItems[0].id,
+        coursePrice: parseFloat(course.CartItems[0].coursePrice),
+        addedAt: course.CartItems[0].createdAt,
+      },
+    }));
+
     return { totalPrice: cart.totalPrice, items };
   }
   async addToCart(userId, courseId) {
     const course = await this.CourseModel.findByPk(courseId);
-    console.log("course ID:", courseId);
     let cart = await this.CartModel.findOne({ where: { userId } });
     if (!cart) {
       cart = await this.CartModel.create({ userId, totalPrice: 0.0 });

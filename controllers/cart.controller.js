@@ -8,6 +8,7 @@ class CartController {
       const cart = await this.cartService.getCart(req.user.id);
       res.status(200).json(cart);
     } catch (err) {
+      console.log(err);
       next(err);
     }
   };
@@ -21,7 +22,6 @@ class CartController {
         .status(201)
         .json({ message: "Course added to cart successfully", cartItem });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   };
