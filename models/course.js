@@ -31,13 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "courseId",
       });
       Course.belongsToMany(models.User, {
-        through: models.Cart,
-        foreignKey: "courseId",
-      });
-      Course.belongsToMany(models.User, {
         through: models.Certificate,
         foreignKey: "courseId",
       });
+      Course.hasMany(models.CartItems, { foreignKey: "courseId" });
     }
   }
   Course.init(

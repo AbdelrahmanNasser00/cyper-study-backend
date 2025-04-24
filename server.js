@@ -11,6 +11,7 @@ const courseRoutes = require("./routes/courses.routes");
 const lessonRoutes = require("./routes/lesson.routes");
 const categoryRoutes = require("./routes/category.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
+const cartRoutes = require("./routes/cart.routes");
 const morgan = require("morgan");
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -26,6 +27,7 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/cart", cartRoutes);
 const testConnection = async () => {
   try {
     await sequelize.authenticate();
