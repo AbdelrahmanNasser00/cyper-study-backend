@@ -45,7 +45,7 @@ class CartService {
       id: course.id,
       title: course.title,
       description: course.description,
-      price: parseFloat(course.price),
+      price: course.price,
       thumbnail: course.thumbnail,
       level: course.level,
       duration: course.duration,
@@ -53,7 +53,7 @@ class CartService {
       category: course.Category.name,
       cartItem: {
         id: course.CartItems[0].id,
-        coursePrice: parseFloat(course.CartItems[0].coursePrice),
+        coursePrice: course.CartItems[0].coursePrice,
         addedAt: course.CartItems[0].createdAt,
       },
     }));
