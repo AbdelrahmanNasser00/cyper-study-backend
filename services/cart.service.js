@@ -54,7 +54,7 @@ class CartService {
       cartItem: {
         id: course.CartItems[0].id,
         coursePrice: course.CartItems[0].coursePrice,
-        addedAt: course.CartItems[0].createdAt,
+        createdAt: course.CartItems[0].createdAt,
       },
     }));
 
