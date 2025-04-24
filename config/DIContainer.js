@@ -9,6 +9,7 @@ const {
   Cart,
   CartItems,
   Coupon,
+  Review,
 } = db;
 // const Category = require("../models/category");
 // const Order = require("../models/order");
@@ -35,10 +36,10 @@ const CategoryController = require("../controllers/category.controller");
 const CartController = require("../controllers/cart.controller");
 const WishlistController = require("../controllers/wishlist.controller");
 const CouponController = require("../controllers/coupon.controller");
+const ReviewController = require("../controllers/review.controller");
 
 // const OrderController = require("../controllers/order.controller");
 // const EnrollmentController = require("../controllers/enrollment.controller");
-// const ReviewController = require("../controllers/review.controller");
 // const CertificateController = require("../controllers/certificate.controller");
 // const NotificationController = require("../controllers/notification.controller");
 // const PaymentController = require("../controllers/payment.controller");
@@ -51,12 +52,10 @@ const LessonService = require("../services/lesson.service");
 const WishlistService = require("../services/wishlist.service");
 const CartService = require("../services/cart.service");
 const couponService = require("../services/coupon.service");
-
-// const UserService = require("../services/user.service");
+const ReviewService = require("../services/review.service");
 
 // const OrderService = require("../services/order.service");
 // const EnrollmentService = require("../services/enrollment.service");
-// const ReviewService = require("../services/review.service");
 // const CertificateService = require("../services/certificate.service");
 // const NotificationService = require("../services/notification.service");
 // const PaymentService = require("../services/payment.service");
@@ -91,6 +90,7 @@ class DIContainer {
         AppErrors
       );
       this.couponService = new couponService(Coupon, AppErrors);
+      this.reviewService = new ReviewService(Review, User, AppErrors);
 
       // Controllers
       this.authController = new AuthController(this.authService);
@@ -99,8 +99,9 @@ class DIContainer {
       this.categoryController = new CategoryController(this.categoryService);
       this.wishlistController = new WishlistController(this.wishlistService);
       this.cartController = new CartController(this.cartService);
-
       this.couponController = new CouponController(this.couponService);
+      this.reviewController = new ReviewController(this.reviewService);
+
       DIContainer.instance = this;
     }
     return DIContainer.instance;

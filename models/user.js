@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Order, { foreignKey: "userId" });
       User.hasMany(models.Notification, { foreignKey: "userId" });
       User.hasMany(models.Payment, { foreignKey: "userId" });
+      // User.hasMany(models.Review, {
+      //   foreignKey: "userId",
+      //   onDelete: "CASCADE",
+      // });
       User.belongsToMany(models.Course, {
         through: models.Enrollment,
         foreignKey: "userId",

@@ -30,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Review,
         foreignKey: "courseId",
       });
-      Course.belongsToMany(models.User, {
-        through: models.Certificate,
+      Course.hasMany(models.Review, {
         foreignKey: "courseId",
+        onDelete: "CASCADE",
       });
       Course.hasMany(models.CartItems, { foreignKey: "courseId" });
     }
@@ -52,6 +52,16 @@ module.exports = (sequelize, DataTypes) => {
       level: DataTypes.ENUM("beginner", "intermediate", "advanced"),
       duration: DataTypes.INTEGER,
       isPublished: { type: DataTypes.BOOLEAN, defaultValue: false },
+      averageRating: {
+        type: DataTypes.DECIMAL(3, 2),
+        defaultValue: 0.0,
+        allowNull: false,
+      },
+      ratingCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+      },
     },
     {
       sequelize,
