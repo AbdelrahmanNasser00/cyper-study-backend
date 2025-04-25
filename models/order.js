@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("pending", "paid", "failed"),
         defaultValue: "pending",
       },
+      paymentToken: DataTypes.STRING,
+      provider: DataTypes.STRING
     },
     {
       sequelize,

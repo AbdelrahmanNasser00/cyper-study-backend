@@ -1,5 +1,7 @@
+const { Op } = require("sequelize");
+
 class CouponService {
-  constructor({ Coupon ,  AppErrors}) {
+  constructor(Coupon, AppErrors) {
     this.Coupon = Coupon;
     this.AppErrors = AppErrors;
   }
@@ -9,12 +11,12 @@ class CouponService {
       where: {
         code,
         courseId,
-        expires_at: {
-          [this.Coupon.sequelize.Op.gt]: new Date(),
+        expiresAt: {
+          [Op.gt]: new Date(), 
         },
-        [this.Coupon.sequelize.Op.or]: [
-          { usage_limit: null },
-          this.Coupon.sequelize.literal("usage_limit > times_used"),
+        [Op.or]: [
+          { usageLimit: null },
+          this.Coupon.sequelize.literal("usageLimit > timesUsed"),
         ],
       },
     });
@@ -50,19 +52,15 @@ class CouponService {
     // Validate the coupon
     const coupon = await this.validateCoupon(code, courseId);
     if (!coupon) {
-      throw new  this.AppErrors("Invalid or expired coupon", 400);
-  
+      throw new this.AppErrors("Invalid or expired coupon", 400);
     }
 
-    
     let discount = 0;
     if (coupon.discount) {
       discount = (coursePrice * coupon.discount) / 100;
-    } 
+    }
 
-    
     discount = Math.min(discount, coursePrice);
-
 
     const finalPrice = coursePrice - discount;
 
@@ -75,23 +73,20 @@ class CouponService {
   }
 
   async getAllCoupons(courseId = null, limit = 10, offset = 0) {
-    
-
-     // Filter by courseId if provided
+    // Filter by courseId if provided
     const whereClause = courseId ? { courseId } : {};
-    
-// Fetch all coupons with pagination
- const coupons= await this.Coupon.findAll({ where: whereClause, limit, offset });
+
+    // Fetch all coupons with pagination
+    const coupons = await this.Coupon.findAll({ where: whereClause, limit, offset });
     if (!coupons) {
       throw new this.AppErrors("No coupons found", 404);
     }
     return coupons;
-
   }
 
   async deleteCoupon(id) {
     const coupon = await this.Coupon.destroy({ where: { id } });
-    if (!coupon ) {
+    if (!coupon) {
       throw new this.AppErrors("Coupon not found", 404);
     }
     return coupon;
