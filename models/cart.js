@@ -9,20 +9,31 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Cart.belongsTo(models.User, { foreignKey: "userId" });
-      Cart.belongsTo(models.Course, { foreignKey: "courseId" });
+      Cart.hasMany(models.CartItems, {
+        foreignKey: "cartId",
+        onDelete: "CASCADE",
+      });
     }
   }
   Cart.init(
     {
-      userId: { type: DataTypes.INTEGER, allowNull: false },
-      courseId: { type: DataTypes.INTEGER, allowNull: false },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { model: "Users", key: "id" },
+      },
+      totalPrice: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0.0,
+      },
     },
     {
       sequelize,
       modelName: "Cart",
-      tableName: "Cart",
+      tableName: "Carts",
       timestamps: true,
-      indexes: [{ unique: true, fields: ["userId", "courseId"] }],
+      indexes: [{ unique: true, fields: ["userId"] }],
     }
   );
   return Cart;

@@ -1,26 +1,34 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Carts", {
+    await queryInterface.createTable("CartItems", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userId: {
+      cartId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Users",
+          model: "Carts",
           key: "id",
         },
         onDelete: "CASCADE",
       },
-      totalPrice: {
+      courseId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Courses",
+          key: "id",
+        },
+        onDelete: "CASCADE",
+      },
+      coursePrice: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
-        defaultValue: 0.0,
       },
       createdAt: {
         allowNull: false,
@@ -32,13 +40,13 @@ module.exports = {
       },
     });
 
-    await queryInterface.addIndex("Carts", ["userId"], {
+    await queryInterface.addIndex("CartItems", ["cartId", "courseId"], {
       unique: true,
-      name: "carts_userId_unique",
+      name: "cartitems_cart_course_unique",
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Carts");
+    await queryInterface.dropTable("CartItems");
   },
 };

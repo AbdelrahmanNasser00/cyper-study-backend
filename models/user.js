@@ -8,10 +8,18 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      User.hasOne(models.Cart, {
+        foreignKey: "userId",
+        onDelete: "CASCADE",
+      });
       User.hasMany(models.Course, { foreignKey: "instructorId" });
       User.hasMany(models.Order, { foreignKey: "userId" });
       User.hasMany(models.Notification, { foreignKey: "userId" });
       User.hasMany(models.Payment, { foreignKey: "userId" });
+      // User.hasMany(models.Review, {
+      //   foreignKey: "userId",
+      //   onDelete: "CASCADE",
+      // });
       User.belongsToMany(models.Course, {
         through: models.Enrollment,
         foreignKey: "userId",
@@ -25,10 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Review,
         foreignKey: "userId",
       });
-      User.belongsToMany(models.Course, {
-        through: models.Cart,
-        foreignKey: "userId",
-      });
+
       User.belongsToMany(models.Course, {
         through: models.Certificate,
         foreignKey: "userId",
