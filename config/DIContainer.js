@@ -50,7 +50,6 @@ const ReviewController = require("../controllers/review.controller");
 // const NotificationController = require("../controllers/notification.controller");
 // const PaymentController = require("../controllers/payment.controller");
 
-const CouponController = require("../controllers/coupon.controller");
 const EnrollmentController=require("../controllers/enrollment.controller");
 
 
