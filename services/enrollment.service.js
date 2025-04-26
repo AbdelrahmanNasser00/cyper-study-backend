@@ -103,13 +103,13 @@ class EnrollmentService {
           if (!order) {
             throw new this.AppErrors("Order not found", 404);
         }
-        
+        console.log(order);
         const paymentService = this.paymentFactory.getPaymentService(order.provider);
 
         return await sequelize.transaction(async (t) => {
        
             const paymentResult = await paymentService.capturePayment(token);
-
+console.log(paymentResult)
             if (paymentResult.status !== "COMPLETED") {
                 throw new this.AppErrors("Payment not completed.", 400);
             }
@@ -125,18 +125,17 @@ class EnrollmentService {
                 transaction: t,
             });
 
-            await this.enrollment.create(
-                {
-                    userId: order.userId,
-                    courseId: orderItem.courseId,
-                },
-                { transaction: t }
-            );
-
-            return {
-                message: "Payment completed successfully",
-                orderDetails: paymentResult,
+            const enrollmentData = {
+              userId: order.userId,
+              courseId: orderItem.courseId, 
             };
+
+            console.log("Corrected Enrollment Data:", enrollmentData);
+
+            await this.enrollment.create(enrollmentData, { transaction: t });
+
+            return    paymentResult;
+          
         });
     }
 }

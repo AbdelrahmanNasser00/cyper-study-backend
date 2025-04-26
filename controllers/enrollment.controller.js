@@ -26,7 +26,7 @@ class EnrollmentController {
      
       
       const orderDetails= await  this.enrollmentService.completeOrder(req.query.token )
-     
+     console.log(orderDetails)
       res.status(200).json({ message: "Payment captured", orderDetails });
     } catch (error) {
      
