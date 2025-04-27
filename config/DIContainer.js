@@ -67,7 +67,7 @@ const couponService = require("../services/coupon.service");
  const PaypalService= require("../services/paypal.service");
 const StripeService = require("../services/stripe.service");
 const FawryService = require("../services/fawry.service");
-
+const EmailService=require("../services/email.service");
 
 // const UserService = require("../services/user.service");
 
@@ -87,11 +87,14 @@ class DIContainer {
   constructor() {
     if (!DIContainer.instance) {
       // Services
+
+      this.EmailService= new EmailService();
       this.authService = new AuthService(
         User,
         passwordUtils,
         tokenUtils,
-        AppErrors
+        AppErrors,
+        this.EmailService
       );
       this.courseService = new CourseService(
         Course,
