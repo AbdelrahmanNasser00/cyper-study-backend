@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Lesson.belongsTo(models.Course, { foreignKey: "courseId" });
+      Lesson.hasMany(models.Progress, {
+        foreignKey: "lessonId",
+        as: "progresses",
+      });
     }
   }
   Lesson.init(
