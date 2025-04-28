@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
       });
       User.hasMany(models.Course, { foreignKey: "instructorId" });
+      User.hasMany(models.Progress, { foreignKey: "userId", as: "progresses" });
       User.hasMany(models.Order, { foreignKey: "userId" });
       User.hasMany(models.Notification, { foreignKey: "userId" });
       User.hasMany(models.Payment, { foreignKey: "userId" });
@@ -23,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.Course, {
         through: models.Enrollment,
         foreignKey: "userId",
-        otherKey: "courseId", 
+        otherKey: "courseId",
       });
-      
+
       User.belongsToMany(models.Course, {
         through: models.Wishlist,
         foreignKey: "userId",

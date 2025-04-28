@@ -14,15 +14,19 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       Course.belongsTo(models.Category, { foreignKey: "categoryId" });
+      Course.hasMany(models.Progress, {
+        foreignKey: "courseId",
+        as: "progresses",
+      });
       Course.hasMany(models.Lesson, { foreignKey: "courseId" });
       Course.hasMany(models.Coupon, { foreignKey: "courseId" });
       Course.hasMany(models.OrderItem, { foreignKey: "courseId" });
       Course.belongsToMany(models.User, {
         through: models.Enrollment,
         foreignKey: "courseId",
-        otherKey: "userId", 
+        otherKey: "userId",
       });
-      
+
       Course.belongsToMany(models.User, {
         through: models.Wishlist,
         foreignKey: "courseId",
@@ -31,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
       Course.belongsToMany(models.User, {
         through: models.Review,
         foreignKey: "courseId",
+      });
+      Course.belongsToMany(models.User, {
+        through: models.Certificate,
+        foreignKey: "courseId",
+        otherKey: "userId",
       });
       Course.hasMany(models.Review, {
         foreignKey: "courseId",

@@ -7,7 +7,8 @@ const authorize = require("../middlewares/role.middleware");
 router.post(
   "/",
   authenticate,
-  authorize(["student"], certificateController.generateCertificate)
+  authorize(["student"]),
+  certificateController.generateCertificate
 );
 
 router.get(
@@ -26,7 +27,8 @@ router.get(
 
 router.get(
   "/:id",
-  authorize(["instructor"]),
+  authenticate,
+  authorize(["instructor", "student"]),
   certificateController.getCertificateById
 );
 

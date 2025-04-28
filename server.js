@@ -11,12 +11,11 @@ const courseRoutes = require("./routes/courses.routes");
 const lessonRoutes = require("./routes/lesson.routes");
 const categoryRoutes = require("./routes/category.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
-
-const orderRoutes=require("./routes/enrollment.routes")
-const couponsRouter=require("./routes/coupon.routes")
-
+const orderRoutes = require("./routes/enrollment.routes");
+const couponsRouter = require("./routes/coupon.routes");
 const cartRoutes = require("./routes/cart.routes");
 const reviewsRoutes = require("./routes/review.routes");
+const certificateRoutes = require("./routes/certificate.routes");
 
 const morgan = require("morgan");
 const errorHandler = require("./middlewares/errorHandler");
@@ -33,12 +32,11 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/wishlist", wishlistRoutes);
-
-app.use("/api/orders",orderRoutes);
-app.use("/api/coupons",couponsRouter);
-
+app.use("/api/orders", orderRoutes);
+app.use("/api/coupons", couponsRouter);
 app.use("/api/cart", cartRoutes);
 app.use("/api/reviews", reviewsRoutes);
+app.use("/api/certificate", certificateRoutes);
 
 const testConnection = async () => {
   try {

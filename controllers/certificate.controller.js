@@ -11,6 +11,7 @@ class CertificateController {
       );
       res.status(200).json(certificate);
     } catch (err) {
+      console.log(err);
       next(err);
     }
   };

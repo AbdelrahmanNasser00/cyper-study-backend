@@ -1,5 +1,4 @@
 const db = require("../models");
-
 const {
   User,
   Course,
@@ -14,6 +13,7 @@ const {
   Order,
   OrderItem,
   Certificate,
+  Progress,
 } = db;
 
 //Factories
@@ -35,9 +35,10 @@ const CouponController = require("../controllers/coupon.controller");
 const ReviewController = require("../controllers/review.controller");
 const CertificateController = require("../controllers/certificate.controller");
 const EnrollmentController = require("../controllers/enrollment.controller");
-
+const ProgressController = require("../controllers/progress.controller");
 // const OrderController = require("../controllers/order.controller");
 // const NotificationController = require("../controllers/notification.controller");
+// const PaymentController = require("../controllers/payment.controller");
 
 // Services
 const AuthService = require("../services/auth.service");
@@ -53,6 +54,8 @@ const PaypalService = require("../services/paypal.service");
 const StripeService = require("../services/stripe.service");
 const FawryService = require("../services/fawry.service");
 const CertificateService = require("../services/certificate.service");
+const ProgressService = require("../services/progress.service");
+const EmailService = require("../services/email.service");
 
 // const OrderService = require("../services/order.service");
 // const NotificationService = require("../services/notification.service");
@@ -61,11 +64,13 @@ class DIContainer {
   constructor() {
     if (!DIContainer.instance) {
       // Services
+      this.EmailService = new EmailService();
       this.authService = new AuthService(
         User,
         passwordUtils,
         tokenUtils,
-        AppErrors
+        AppErrors,
+        this.EmailService
       );
       this.courseService = new CourseService(
         Course,
@@ -86,7 +91,13 @@ class DIContainer {
         User,
         AppErrors
       );
-
+      this.ProgressService = new ProgressService({
+        Progress,
+        User,
+        Lesson,
+        Enrollment,
+        AppErrors,
+      });
       this.paypalService = new PaypalService();
       this.StripeService = new StripeService();
       // this.FawryService=new FawryService(
@@ -134,11 +145,11 @@ class DIContainer {
         this.enrollmentService
       );
       this.cartController = new CartController(this.cartService);
-      this.couponController = new CouponController(this.couponService);
       this.reviewController = new ReviewController(this.reviewService);
       this.certificateController = new CertificateController(
         this.certificateService
       );
+      this.ProgressController = new ProgressController(this.ProgressService);
 
       DIContainer.instance = this;
     }
