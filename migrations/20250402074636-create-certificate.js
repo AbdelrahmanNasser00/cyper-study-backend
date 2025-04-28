@@ -1,5 +1,5 @@
 "use strict";
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Certificates", {
@@ -31,13 +31,27 @@ module.exports = {
       },
       certificateCode: {
         type: Sequelize.STRING(50),
-        unique: true,
         allowNull: false,
+        unique: true,
       },
-      issuedAt: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
-      pdfUrl: { type: Sequelize.STRING },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+      },
+    });
+
+    await queryInterface.addIndex("Certificates", ["userId", "courseId"], {
+      unique: true,
+      name: "certificates_userId_courseId_unique",
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("Certificates");
   },

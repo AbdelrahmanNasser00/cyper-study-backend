@@ -20,15 +20,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(50),
         unique: true,
         allowNull: false,
+        validate: {
+          is: /^[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}$/,
+        },
       },
-      issuedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-      pdfUrl: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "Certificate",
       tableName: "Certificates",
       timestamps: true,
+      indexes: [{ unique: true, fields: ["userId", "courseId"] }],
     }
   );
   return Certificate;
