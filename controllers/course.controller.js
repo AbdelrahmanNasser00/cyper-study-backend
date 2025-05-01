@@ -11,9 +11,9 @@ class CourseController {
         req.user.id
       );
       res.status(201).json({
-        message:"course created successfully.",
-        course
-        });
+        message: "course created successfully.",
+        course,
+      });
     } catch (error) {
       console.log(error);
       next(error);
@@ -71,6 +71,17 @@ class CourseController {
         req.user.id
       );
       res.status(200).json(courses);
+    } catch (error) {
+      next(error);
+    }
+  };
+  getStudentEnrolledCourseById = async (req, res, next) => {
+    try {
+      const course = await this.courseService.getStudentEnrolledCourseById(
+        req.user.id,
+        req.params.id
+      );
+      res.status(200).json(course);
     } catch (error) {
       next(error);
     }

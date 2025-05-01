@@ -14,6 +14,7 @@ const {
   OrderItem,
   Certificate,
   Progress,
+  Earning,
 } = db;
 
 //Factories
@@ -36,6 +37,7 @@ const ReviewController = require("../controllers/review.controller");
 const CertificateController = require("../controllers/certificate.controller");
 const EnrollmentController = require("../controllers/enrollment.controller");
 const ProgressController = require("../controllers/progress.controller");
+const DashboardController = require("../controllers/dashboard.controller");
 // const OrderController = require("../controllers/order.controller");
 // const NotificationController = require("../controllers/notification.controller");
 // const PaymentController = require("../controllers/payment.controller");
@@ -56,6 +58,7 @@ const FawryService = require("../services/fawry.service");
 const CertificateService = require("../services/certificate.service");
 const ProgressService = require("../services/progress.service");
 const EmailService = require("../services/email.service");
+const DashboardService = require("../services/dashboard.service");
 
 // const OrderService = require("../services/order.service");
 // const NotificationService = require("../services/notification.service");
@@ -78,6 +81,7 @@ class DIContainer {
         Enrollment,
         Lesson,
         Category,
+        Progress,
         AppErrors
       );
       this.lessonService = new LessonService(Lesson, AppErrors);
@@ -116,7 +120,14 @@ class DIContainer {
         User,
         AppErrors
       );
-
+      this.dashboardService = new DashboardService(
+        Enrollment,
+        Course,
+        Certificate,
+        Review,
+        Earning,
+        AppErrors
+      );
       //factories
       this.PaymentFactory = new PaymentFactory({
         paypalService: this.paypalService,
@@ -150,6 +161,7 @@ class DIContainer {
         this.certificateService
       );
       this.ProgressController = new ProgressController(this.ProgressService);
+      this.dashboardController = new DashboardController(this.dashboardService);
 
       DIContainer.instance = this;
     }

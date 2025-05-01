@@ -223,6 +223,32 @@ router.get(
   courseController.getStudentEnrolledCourses
 );
 
+/**
+ * @swagger
+ * /api/courses/my-enrollments/{id}:
+ *   get:
+ *     summary: Get details of a specific enrolled course for the logged-in student
+ *     tags: [Courses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *     responses:
+ *       200:
+ *         description: Course details with progress and related
+ */
+router.get(
+  "/my-enrollments/:id",
+  authenticate,
+  authorize(["student"]),
+  courseController.getStudentEnrolledCourseById
+);
+
 // General Routes
 /**
  * @swagger

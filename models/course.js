@@ -46,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
       });
       Course.hasMany(models.CartItems, { foreignKey: "courseId" });
+      Course.hasOne(models.Earning, { foreignKey: "courseId", as: "earning" });
     }
   }
   Course.init(

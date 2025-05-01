@@ -7,6 +7,7 @@ class CourseService {
     EnrollmentModel,
     LessonModel,
     CategoryModel,
+    ProgressModel,
     AppErrors
   ) {
     this.CourseModel = CourseModel;
@@ -14,6 +15,7 @@ class CourseService {
     this.EnrollmentModel = EnrollmentModel;
     this.LessonModel = LessonModel;
     this.CategoryModel = CategoryModel;
+    this.ProgressModel = ProgressModel;
     this.AppErrors = AppErrors;
   }
   async createCourse(data, instructorId) {
@@ -26,23 +28,37 @@ class CourseService {
     });
 
     if (existingCourse) {
-      throw new this.AppErrors("A course with this title already exists for this instructor", 400);
+      throw new this.AppErrors(
+        "A course with this title already exists for this instructor",
+        400
+      );
     }
 
     // Create the course if it doesn't exist
     const course = await this.CourseModel.create({
       ...data,
       instructorId,
-      
     });
 
     console.log(course);
     return course;
   }
+  async getTopCourses(instructorId) {
+    try {
+      const courses = await this.CourseModel.findAll({
+        where: { instructorId },
+        order: [["rating", "DESC"]],
+        limit: 5,
+      });
 
+      return courses;
+    } catch (error) {
+      next(error);
+    }
+  }
   async getInstructorCourses(instructorId) {
     const courses = await this.CourseModel.findAll({
-      where: { instructorId  },
+      where: { instructorId },
     });
     return courses;
   }
@@ -81,17 +97,55 @@ class CourseService {
     return course;
   }
 
-  async getStudentEnrolledCourses(studentId) {
+  async getStudentEnrolledCourses(userId) {
     const courses = await this.CourseModel.findAll({
       include: [
         {
           model: this.EnrollmentModel,
-          where: { studentId },
-          attributes: ["courseId", "progress", "enrolledAt"],
+          where: { userId },
+          attributes: ["progress", "createdAt"],
         },
       ],
+      attributes: ["id", "title", "description", "price"],
     });
     return courses;
+  }
+
+  async getStudentEnrolledCourseById(userId, courseId) {
+    try {
+      const course = await this.CourseModel.findOne({
+        where: { id: courseId },
+        include: [
+          {
+            model: this.EnrollmentModel,
+            where: { userId },
+            attributes: ["progress", "createdAt"], // Enrollment details
+          },
+          {
+            model: this.LessonModel,
+            attributes: ["id", "title", "order", "isPreview"], // Lesson details
+            include: [
+              {
+                model: this.ProgressModel,
+                where: { userId },
+                required: false, // Include progress even if not completed
+                attributes: ["isCompleted", "completedAt"],
+              },
+            ],
+          },
+        ],
+        attributes: ["id", "title", "description", "price", "createdAt"], // Course details
+      });
+
+      if (!course) {
+        throw new this.AppErrors("Course not found or not enrolled", 404);
+      }
+
+      return course;
+    } catch (error) {
+      console.error("Error in getStudentEnrolledCourseById:", error.message);
+      throw new this.AppErrors("Failed to fetch enrolled course details", 500);
+    }
   }
 
   async getCourseById(courseId, userId = null) {

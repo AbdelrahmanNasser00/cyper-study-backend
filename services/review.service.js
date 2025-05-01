@@ -42,7 +42,19 @@ class ReviewService {
 
     return reviews;
   }
+  getRecentReviews = async (courseId) => {
+    try {
+      const recentReviews = await this.ReviewModel.findAll({
+        where: { courseId: courseId },
+        order: [["createdAt", "DESC"]],
+        limit: 5,
+      });
 
+      return recentReviews;
+    } catch (error) {
+      next(error);
+    }
+  };
   async updateReview(userId, reviewId, reviewData) {
     const review = await this.ReviewModel.findOne({
       where: {
