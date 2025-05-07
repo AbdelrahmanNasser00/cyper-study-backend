@@ -18,7 +18,7 @@ class DashboardService {
           attributes: [],
         },
       });
-
+console.log("totalStudents", totalStudents);
       const totalCertificates = await this.Certificate.count({
         include: {
           model: Course,
@@ -26,7 +26,7 @@ class DashboardService {
           attributes: [],
         },
       });
-
+console.log("totalCertificates", totalCertificates);
       const totalReviews = await this.Review.count({
         include: {
           model: Course,
@@ -34,11 +34,11 @@ class DashboardService {
           attributes: [],
         },
       });
-
+console.log("totalReviews", totalReviews);
       const totalEarnings = await this.Earning.sum("totalEarnings", {
         where: { instructorId },
       });
-
+console.log("totalEarnings",totalEarnings)
       return {
         totalCourses: courses.length,
         totalStudents,
@@ -47,7 +47,7 @@ class DashboardService {
         totalEarnings,
       };
     } catch (error) {
-      next(error);
+      throw new this.AppErrors("Failed to fetch dashboard summary", 500);
     }
   }
 
@@ -114,7 +114,7 @@ class DashboardService {
         studentsProgress: formattedStudentsProgress,
       };
     } catch (error) {
-      next(error);
+      throw new this.AppErrors("Failed to fetch course performance", 500);
     }
   }
 

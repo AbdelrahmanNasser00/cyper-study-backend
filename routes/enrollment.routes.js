@@ -14,7 +14,7 @@ const { createOrderSchema } = require("../validation/enrollment.validation");
 
 /**
  * @swagger
- * /enrollment:
+ * /api/orders:
  *   post:
  *     summary: Create an order for course enrollment
  *     tags: [Enrollment]
@@ -73,7 +73,7 @@ router.post(
 
 /**
  * @swagger
- * /enrollment/complete-order:
+ * /api/orders/complete-order:
  *   get:
  *     summary: Complete the payment for an order
  *     tags: [Enrollment]
@@ -105,7 +105,7 @@ router.get("/complete-order", enrollmentController.completeOrder);
 
 /**
  * @swagger
- * /enrollment/cancel-order:
+ * /api/orders/cancel-order:
  *   get:
  *     summary: Cancel an order
  *     tags: [Enrollment]

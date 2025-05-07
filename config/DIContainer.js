@@ -142,7 +142,8 @@ class DIContainer {
         AppErrors,
         this.PaymentFactory,
         Order,
-        OrderItem
+        OrderItem,
+        Earning
       );
 
       // Controllers
