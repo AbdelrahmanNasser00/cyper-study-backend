@@ -20,7 +20,7 @@ class PaypalService extends PaymentService {
     return response.data.access_token;
   }
 
-  async createOrder(finalPrice, orderId, provider) {
+  async createOrder(finalPrice, orderId) {
     try {
       const accessToken = await this.generateAccessToken();
 
@@ -54,12 +54,12 @@ class PaypalService extends PaymentService {
       });
 
       const approvalUrl = response.data.links.find((link) => link.rel === "approve").href;
-      const paypalToken = response.data.id;
+      const Token = response.data.id;
   
      
       return {
         approvalUrl,
-        paypalToken,
+        Token,
       };
     } catch (error) {
       console.error("Error creating PayPal order:", error.response?.data || error.message);

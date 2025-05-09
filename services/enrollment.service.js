@@ -89,13 +89,13 @@ class EnrollmentService {
         { transaction: t }
       );
 
-      const { approvalUrl, paypalToken } = await paymentService.createOrder(
+      const { approvalUrl, Token } = await paymentService.createOrder(
         finalPrice,
         order.id,
-        provider
+        
       );
 
-      order.paymentToken = paypalToken;
+      order.paymentToken =Token;
       await order.save({ transaction: t });
 
       return {
