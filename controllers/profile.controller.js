@@ -1,6 +1,5 @@
-
 class ProfileController {
-  constructor( profileService ) {
+  constructor(profileService) {
     this.profileService = profileService;
   }
 
@@ -16,7 +15,6 @@ class ProfileController {
 
   updateProfile = async (req, res, next) => {
     try {
-    
       const userId = req.user.id;
       const updated = await this.profileService.updateProfile(userId, req.body);
       res.json(updated);
@@ -27,11 +25,14 @@ class ProfileController {
 
   updatePassword = async (req, res, next) => {
     try {
-   
       const { currentPassword, newPassword } = req.body;
       const userId = req.user.id;
 
-      const result = await this.profileService.updatePassword(userId, currentPassword, newPassword);
+      const result = await this.profileService.updatePassword(
+        userId,
+        currentPassword,
+        newPassword
+      );
       res.json(result);
     } catch (err) {
       next(err);
@@ -40,12 +41,18 @@ class ProfileController {
 
   updateProfilePicture = async (req, res, next) => {
     try {
-   
       const userId = req.user.id;
-      const { profilePicture } = req.body;
-
-      const result = await this.profileService.updateProfilePicture(userId, profilePicture);
-      res.json(result);
+      if (!req.file) {
+        return res
+          .status(400)
+          .json({ message: "Profile picture is required." });
+      }
+      const profilePicture = `/uploads/profilePictures/${req.file.filename}`;
+      const result = await this.profileService.updateProfilePicture(
+        userId,
+        profilePicture
+      );
+      res.json({ message: "Profile picture updated", profilePicture });
     } catch (err) {
       next(err);
     }

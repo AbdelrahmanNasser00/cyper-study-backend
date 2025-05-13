@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { profileController } = require("../config/DIContainer");
 const authenticate = require("../middlewares/authenticate.middleware");
+const upload = require("../middlewares/uploadMiddleware");
 const validator = require("express-joi-validation").createValidator({});
 const {
   updateProfileSchema,
   updatePasswordSchema,
-  updateProfilePictureSchema,
 } = require("../validation/profile.validation");
 
 /**
@@ -148,8 +148,8 @@ router.put(
 router.put(
   "/picture",
   authenticate,
-  validator.body(updateProfilePictureSchema),
-  profileController.updateProfilePicture
+  upload.single("profilePicture"),
+  (req, res, next) => profileController.updateProfilePicture(req, res, next)
 );
 
 module.exports = router;

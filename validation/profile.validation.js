@@ -10,20 +10,17 @@ const updateProfileSchema = Joi.object({
 const updatePasswordSchema = Joi.object({
   currentPassword: Joi.string().required(),
   newPassword: Joi.string().min(6).required(),
-    confirmPassword: Joi.string()
-        .valid(Joi.ref("newPassword"))
-        .required()
-        .messages({
-        "any.only": "Confirm password must match the new password",
-        }),
+  confirmPassword: Joi.string()
+    .valid(Joi.ref("newPassword"))
+    .required()
+    .messages({
+      "any.only": "Confirm password must match the new password",
+    }),
 });
 
-const updateProfilePictureSchema = Joi.object({
-  profilePicture: Joi.string().uri().required(),
-});
 
 module.exports = {
   updateProfileSchema,
   updatePasswordSchema,
-  updateProfilePictureSchema,
+
 };
