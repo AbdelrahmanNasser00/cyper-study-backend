@@ -38,10 +38,7 @@ const CertificateController = require("../controllers/certificate.controller");
 const EnrollmentController = require("../controllers/enrollment.controller");
 const ProgressController = require("../controllers/progress.controller");
 const DashboardController = require("../controllers/dashboard.controller");
-// const OrderController = require("../controllers/order.controller");
-// const NotificationController = require("../controllers/notification.controller");
-// const PaymentController = require("../controllers/payment.controller");
-
+const profileController = require("../controllers/profile.controller");
 // Services
 const AuthService = require("../services/auth.service");
 const CategoryService = require("../services/category.service");
@@ -59,7 +56,7 @@ const CertificateService = require("../services/certificate.service");
 const ProgressService = require("../services/progress.service");
 const EmailService = require("../services/email.service");
 const DashboardService = require("../services/dashboard.service");
-
+const profileService = require("../services/profile.service");
 // const OrderService = require("../services/order.service");
 // const NotificationService = require("../services/notification.service");
 
@@ -75,6 +72,7 @@ class DIContainer {
         AppErrors,
         this.EmailService
       );
+      this.profileService = new profileService(User, AppErrors);
       this.courseService = new CourseService(
         Course,
         User,
@@ -163,7 +161,7 @@ class DIContainer {
       );
       this.ProgressController = new ProgressController(this.ProgressService);
       this.dashboardController = new DashboardController(this.dashboardService);
-
+      this.profileController = new profileController(this.profileService);
       DIContainer.instance = this;
     }
     return DIContainer.instance;

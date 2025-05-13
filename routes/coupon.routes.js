@@ -18,7 +18,7 @@ const { couponController } = require("../config/DIContainer"); // Dependency Inj
 
 /**
  * @swagger
- * /coupons:
+ * /api/coupons:
  *   post:
  *     summary: Create a new coupon
  *     tags: [Coupons]
@@ -42,7 +42,7 @@ router.post(
 
 /**
  * @swagger
- * /coupons/apply:
+ * /api//coupons/apply:
  *   post:
  *     summary: Apply a coupon to a course
  *     tags: [Coupons]
@@ -66,7 +66,7 @@ router.post(
 
 /**
  * @swagger
- * /coupons:
+ * /api/coupons:
  *   get:
  *     summary: Get all coupons
  *     tags: [Coupons]
@@ -98,7 +98,7 @@ router.get("/", couponController.getAllCoupons);
 
 /**
  * @swagger
- * /coupons/validate:
+ * /api/coupons/validate:
  *   get:
  *     summary: Validate a coupon
  *     tags: [Coupons]
@@ -129,7 +129,7 @@ router.get(
 
 /**
  * @swagger
- * /coupons/{id}:
+ * /api/coupons/{id}:
  *   put:
  *     summary: Update a coupon
  *     tags: [Coupons]
@@ -161,7 +161,7 @@ router.put(
 
 /**
  * @swagger
- * /coupons/{id}:
+ * /api/coupons/{id}:
  *   delete:
  *     summary: Delete a coupon
  *     tags: [Coupons]

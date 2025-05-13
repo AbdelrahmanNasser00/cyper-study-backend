@@ -17,6 +17,7 @@ const cartRoutes = require("./routes/cart.routes");
 const reviewsRoutes = require("./routes/review.routes");
 const certificateRoutes = require("./routes/certificate.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
+const profileRoutes = require("./routes/profile.routes");
 const morgan = require("morgan");
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -38,6 +39,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/certificate", certificateRoutes);
 app.use("/api/instructor/dashboard", dashboardRoutes);
+app.use("/api/profile", profileRoutes);
 const testConnection = async () => {
   try {
     await sequelize.authenticate();
