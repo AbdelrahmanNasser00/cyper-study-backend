@@ -124,7 +124,8 @@ class DIContainer {
         Certificate,
         Review,
         Earning,
-        AppErrors
+        AppErrors,
+        User
       );
       //factories
       this.PaymentFactory = new PaymentFactory({

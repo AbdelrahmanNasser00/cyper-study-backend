@@ -13,7 +13,7 @@ const authorize = require("../middlewares/role.middleware");
 
 /**
  * @swagger
- * /dashboard/summary:
+ * /api/instructor/dashboard/summary:
  *   get:
  *     summary: Get instructor dashboard summary
  *     tags: [Dashboard]
@@ -52,7 +52,7 @@ router.get(
 
 /**
  * @swagger
- * /dashboard/ratings-summary:
+ * /api/instructor/dashboard/ratings-summary:
  *   get:
  *     summary: Get average ratings summary for instructor
  *     tags: [Dashboard]
@@ -79,7 +79,7 @@ router.get(
 
 /**
  * @swagger
- * /dashboard/course-performance/{courseId}:
+ * /api/instructor/dashboard/course-performance/{courseId}:
  *   get:
  *     summary: Get performance details for a specific course
  *     tags: [Dashboard]
@@ -143,7 +143,7 @@ router.get(
 
 /**
  * @swagger
- * /dashboard/earnings/monthly:
+ * /api/instructor/dashboard/earnings/monthly:
  *   get:
  *     summary: Get monthly earnings breakdown for instructor
  *     tags: [Dashboard]

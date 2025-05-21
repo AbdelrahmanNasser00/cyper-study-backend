@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Coupon.belongsTo(models.Course, { foreignKey: "courseId" });
+      Coupon.belongsTo(models.User, {
+        as: "instructor",
+        foreignKey: "instructorId",
+      });
     }
   }
   Coupon.init(
@@ -21,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true, // Nullable for unlimited usage
       },
+      instructorId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+
       timesUsed: {
         type: DataTypes.INTEGER,
         defaultValue: 0,

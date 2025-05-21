@@ -7,7 +7,8 @@ class CouponController {
   createCoupon = async (req, res, next) => {
     try {
       const couponData = req.body;
-      const coupon = await this.couponService.createCoupon(couponData);
+      const userId = req.user.id; 
+      const coupon = await this.couponService.createCoupon(couponData, userId);
       res.status(201).json({
         message: "Coupon created successfully.",
         coupon,
@@ -32,10 +33,11 @@ class CouponController {
   getAllCoupons = async (req, res, next) => {
     try {
       const { courseId } = req.query; 
+      const instructorId = req.user.id;
       const { page = 1, limit = 10 } = req.query; // Pagination
       const offset = (page - 1) * limit;
 
-      const coupons = await this.couponService.getAllCoupons(courseId, limit, offset);
+      const coupons = await this.couponService.getAllCoupons(courseId,instructorId, limit, offset);
       res.status(200).json({
         message: "Coupons retrieved successfully.",
         coupons,
@@ -49,6 +51,7 @@ class CouponController {
   deleteCoupon = async (req, res, next) => {
     try {
       const { id } = req.params;
+      
       await this.couponService.deleteCoupon(id);
       res.status(204).json({
         message: "Coupon deleted successfully.",

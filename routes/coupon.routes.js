@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const validator = require("express-joi-validation").createValidator({});
+const authorize = require("../middlewares/role.middleware");
+const authenticate = require("../middlewares/authenticate.middleware");
 const {
   couponValidationSchema,
   applyCouponSchema,
@@ -36,6 +38,8 @@ const { couponController } = require("../config/DIContainer"); // Dependency Inj
  */
 router.post(
   "/",
+  authenticate,
+  authorize(["instructor"]),
   validator.body(couponValidationSchema),
   couponController.createCoupon
 );
@@ -60,6 +64,8 @@ router.post(
  */
 router.post(
   "/apply",
+  authenticate,
+
   validator.body(applyCouponSchema),
   couponController.applyCoupon
 );
@@ -94,7 +100,12 @@ router.post(
  *       404:
  *         description: No coupons found
  */
-router.get("/", couponController.getAllCoupons);
+router.get(
+  "/",
+  authenticate,
+  authorize(["instructor"]),
+  couponController.getAllCoupons
+);
 
 /**
  * @swagger
@@ -123,6 +134,8 @@ router.get("/", couponController.getAllCoupons);
  */
 router.get(
   "/validate",
+    authenticate,
+   
   validator.query(validateCouponSchema),
   couponController.validateCoupon
 );
@@ -154,6 +167,8 @@ router.get(
  */
 router.put(
   "/:id",
+    authenticate,
+    authorize(["instructor"]),
   validator.params(validateIDSchema),
   validator.body(couponValidationSchema),
   couponController.updateCoupon
@@ -180,6 +195,8 @@ router.put(
  */
 router.delete(
   "/:id",
+    authenticate,
+    authorize(["instructor"]),
   validator.params(validateIDSchema),
   couponController.deleteCoupon
 );

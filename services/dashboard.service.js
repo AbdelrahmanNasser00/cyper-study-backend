@@ -1,65 +1,62 @@
 const { Op, Sequelize } = require("sequelize");
 
 class DashboardService {
-  constructor(Enrollment, Course, Certificate, Review, Earning, AppErrors) {
+  constructor(
+    Enrollment,
+    Course,
+    Certificate,
+    Review,
+    Earning,
+    AppErrors,
+    User
+  ) {
     this.Enrollment = Enrollment;
     this.Course = Course;
     this.Certificate = Certificate;
     this.Review = Review;
     this.Earning = Earning;
     this.AppErrors = AppErrors;
+    this.User = User;
   }
   async summary(instructorId) {
     try {
+      // Get all courses for the instructor
+      const courses = await this.Course.findAll({
+        where: { instructorId },
+        attributes: ["id"],
+      });
+      const courseIds = courses.map((c) => c.id);
+
+      // Total students enrolled in instructor's courses
       const totalStudents = await this.Enrollment.count({
-        include: {
-          model: Course,
-          where: { instructorId },
-          attributes: [],
-        },
+        where: { courseId: courseIds.length ? courseIds : null },
       });
-console.log("totalStudents", totalStudents);
+
+      // Total certificates issued for instructor's courses
       const totalCertificates = await this.Certificate.count({
-        include: {
-          model: Course,
-          where: { userId: instructorId },
-          attributes: [],
-        },
+        where: { courseId: courseIds.length ? courseIds : null },
       });
-console.log("totalCertificates", totalCertificates);
+
+      // Total reviews for instructor's courses
       const totalReviews = await this.Review.count({
-        include: {
-          model: Course,
-          where: { instructorId },
-          attributes: [],
-        },
+        where: { courseId: courseIds.length ? courseIds : null },
       });
-console.log("totalReviews", totalReviews);
+
+      // Total earnings for instructor
       const totalEarnings = await this.Earning.sum("totalEarnings", {
         where: { instructorId },
       });
-console.log("totalEarnings",totalEarnings)
+
       return {
         totalCourses: courses.length,
         totalStudents,
         totalCertificates,
         totalReviews,
-        totalEarnings,
+        totalEarnings: parseFloat(totalEarnings || 0).toFixed(2),
       };
     } catch (error) {
       throw new this.AppErrors("Failed to fetch dashboard summary", 500);
     }
-  }
-
-  async getRatingsSummary(instructorId) {
-    const courses = await courseService.getCoursesByInstructor(instructorId);
-
-    const ratings = courses.map((c) => c.rating || 0);
-    const averageRating = ratings.length
-      ? (ratings.reduce((a, b) => a + b) / ratings.length).toFixed(2)
-      : 0;
-
-    return averageRating;
   }
 
   //getCoursePerformance
@@ -69,39 +66,42 @@ console.log("totalEarnings",totalEarnings)
       const totalEarnings = await this.Earning.sum("totalEarnings", {
         where: { courseId },
       });
+    
 
       // Fetch total students enrolled in the course
       const totalStudents = await this.Enrollment.count({
         where: { courseId },
       });
-
+  
       // Fetch total reviews for the course
       const totalReviews = await this.Review.count({
         where: { courseId },
       });
-
+    
       // Fetch total certificates issued for the course
       const totalCertificates = await this.Certificate.count({
         where: { courseId },
       });
-
+ 
       // Fetch students and their progress for the course
       const studentsProgress = await this.Enrollment.findAll({
         where: { courseId },
         include: [
           {
             model: this.User,
-            attributes: ["id", "name", "email"], // Include student details
+            attributes: ["id", "firstname", "lastname", "email"],
           },
         ],
-        attributes: ["progress", "createdAt"], // Include progress details
+        attributes: ["progress", "createdAt"],
       });
 
       // Format the students' progress data
       const formattedStudentsProgress = studentsProgress.map((enrollment) => ({
-        studentId: enrollment.User.id,
-        studentName: enrollment.User.name,
-        studentEmail: enrollment.User.email,
+        studentId: enrollment.User?.id,
+        studentName: enrollment.User
+          ? `${enrollment.User.firstname} ${enrollment.User.lastname}`
+          : "",
+        studentEmail: enrollment.User?.email,
         progress: enrollment.progress,
         enrolledAt: enrollment.createdAt,
       }));
@@ -117,7 +117,19 @@ console.log("totalEarnings",totalEarnings)
       throw new this.AppErrors("Failed to fetch course performance", 500);
     }
   }
+  async getRatingsSummary(instructorId) {
+    const courses = await this.Course.findAll({
+      where: { instructorId },
+      attributes: ["id", "averageRating"],
+    });
 
+    const ratings = courses.map((c) => c.rating || 0);
+    const averageRating = ratings.length
+      ? (ratings.reduce((a, b) => a + b) / ratings.length).toFixed(2)
+      : 0;
+
+    return averageRating;
+  }
   async getMonthlyEarningsBreakdown(instructorId) {
     try {
       // Query the Earnings table and group by month and year

@@ -33,7 +33,7 @@ class CouponService {
     });
   }
 
-  async createCoupon(data) {
+  async createCoupon(data, instructorId) {
     const existingCoupon = await this.Coupon.findOne({
       where: { code: data.code, courseId: data.courseId },
     });
@@ -43,6 +43,7 @@ class CouponService {
     // Create the coupon if it doesn't exist
     const coupon = await this.Coupon.create({
       ...data,
+      instructorId,
     });
 
     return coupon;
@@ -72,10 +73,10 @@ class CouponService {
     };
   }
 
-  async getAllCoupons(courseId = null, limit = 10, offset = 0) {
+  async getAllCoupons(courseId = null,instructorId, limit = 10, offset = 0) {
     // Filter by courseId if provided
     const whereClause = courseId ? { courseId } : {};
-
+whereClause.instructorId = instructorId;
     // Fetch all coupons with pagination
     const coupons = await this.Coupon.findAll({ where: whereClause, limit, offset });
     if (!coupons) {

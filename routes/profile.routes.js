@@ -18,7 +18,7 @@ const {
 
 /**
  * @swagger
- * /profile:
+ * /api/profile:
  *   get:
  *     summary: Get the profile of the logged-in user
  *     tags: [Profile]
@@ -30,6 +30,8 @@ const {
  *         content:
  *           application/json:
  *             schema:
+ * 
+ *    
  *               type: object
  *               properties:
  *                 id:
@@ -55,7 +57,7 @@ router.get("/", authenticate, profileController.getProfile);
 
 /**
  * @swagger
- * /profile:
+ * /api/profile:
  *   put:
  *     summary: Update the profile of the logged-in user
  *     tags: [Profile]
@@ -66,7 +68,12 @@ router.get("/", authenticate, profileController.getProfile);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UpdateProfile'
+ *             type: object
+ *           example:
+ *             firstname: "Eman"
+ *             lastname: "Mohamed"
+ *             email: "ahmed@example.com"
+ *             bio: "Web developer"
  *     responses:
  *       200:
  *         description: Profile updated successfully
@@ -75,9 +82,36 @@ router.get("/", authenticate, profileController.getProfile);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 id:
+ *                   type: integer
+ *                 firstname:
  *                   type: string
- *                   description: Success message
+ *                 lastname:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 bio:
+ *                   type: string
+ *                 profilePicture:
+ *                   type: string
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                 updatedAt:
+ *                   type: string
+ *                   format: date-time
+ *               example:
+ *                 id: 3
+ *                 firstname: "Eman"
+ *                 lastname: "Mohamed"
+ *                 email: "ahmed@example.com"
+ *                 role: "instructor"
+ *                 bio: "Web developer"
+ *                 profilePicture: "http://example.com/profile.jpg"
+ *                 createdAt: "2025-04-07T04:14:41.000Z"
+ *                 updatedAt: "2025-05-21T08:49:30.973Z"
  */
 router.put(
   "/",
@@ -88,7 +122,7 @@ router.put(
 
 /**
  * @swagger
- * /profile/password:
+ * /api/profile/password:
  *   put:
  *     summary: Update the password of the logged-in user
  *     tags: [Profile]
@@ -99,7 +133,7 @@ router.put(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UpdatePassword'
+*            type: 'object'
  *     responses:
  *       200:
  *         description: Password updated successfully
@@ -121,7 +155,7 @@ router.put(
 
 /**
  * @swagger
- * /profile/picture:
+ * /api/profile/picture:
  *   put:
  *     summary: Update the profile picture of the logged-in user
  *     tags: [Profile]
@@ -132,7 +166,7 @@ router.put(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UpdateProfilePicture'
+  *             type: object
  *     responses:
  *       200:
  *         description: Profile picture updated successfully
@@ -151,5 +185,7 @@ router.put(
   upload.single("profilePicture"),
   (req, res, next) => profileController.updateProfilePicture(req, res, next)
 );
+
+
 
 module.exports = router;
