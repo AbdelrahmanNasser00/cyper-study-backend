@@ -43,11 +43,26 @@ class CourseService {
     console.log(course);
     return course;
   }
+   async TopCourses() {
+  const limit = 5; 
+  return await this.CourseModel.findAll({
+    where: { isPublished: true },
+    order: [["averageRating", "DESC"]],
+    limit,
+    include: [
+      {
+        model: this.UserModel,
+        as: "instructor",
+        attributes: ["firstname", "lastname"],
+      },
+    ],
+  });
+}
   async getTopCourses(instructorId) {
     try {
       const courses = await this.CourseModel.findAll({
         where: { instructorId },
-        order: [["rating", "DESC"]],
+        order: [["averageRating", "DESC"]],
         limit: 5,
       });
 

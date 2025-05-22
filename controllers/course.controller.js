@@ -19,7 +19,15 @@ class CourseController {
       next(error);
     }
   };
-
+TopCourses = async (req, res, next) => {
+  try {
+    // Use static method and pass models from DIContainer or require directly
+    const courses = await await this.courseService.TopCourses();
+    res.status(200).json(courses);
+  } catch (error) {
+    next(error);
+  }
+};
   getInstructorCourses = async (req, res, next) => {
     try {
       const courses = await this.courseService.getInstructorCourses(

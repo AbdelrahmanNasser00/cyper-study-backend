@@ -248,7 +248,43 @@ router.get(
   authorize(["student"]),
   courseController.getStudentEnrolledCourseById
 );
-
+/**
+ * @swagger
+ * /api/courses/top:
+ *   get:
+ *     summary: Get top-rated published courses
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of top courses to return (default 5)
+ *     responses:
+ *       200:
+ *         description: List of top-rated courses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   title:
+ *                     type: string
+ *                   rating:
+ *                     type: number
+ *                   instructor:
+ *                     type: object
+ *                     properties:
+ *                       firstname:
+ *                         type: string
+ *                       lastname:
+ *                         type: string
+ */
+router.get("/top", courseController.TopCourses);
 // General Routes
 /**
  * @swagger
