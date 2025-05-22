@@ -1,6 +1,7 @@
 class CategoryService {
-  constructor(CategoryModel, AppErrors) {
+  constructor(CategoryModel, course,AppErrors) {
     this.CategoryModel = CategoryModel;
+    this.course=course;
     this.AppErrors = AppErrors;
   }
 
@@ -26,7 +27,15 @@ class CategoryService {
 
   // Get a category by name
   async getCategoryByName(name) {
-    const category = await this.CategoryModel.findOne({ where: { name } });
+   const category = await this.CategoryModel.findOne({
+    where: { name },
+    include: [
+      {
+        model: this.course,
+        as: "Courses", 
+      },
+    ],
+  });
     if (!category) {
       throw new this.AppErrors("Category not found", 404);
     }

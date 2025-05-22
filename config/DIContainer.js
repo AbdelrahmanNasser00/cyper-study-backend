@@ -83,7 +83,7 @@ class DIContainer {
         AppErrors
       );
       this.lessonService = new LessonService(Lesson, AppErrors);
-      this.categoryService = new CategoryService(Category, AppErrors);
+      this.categoryService = new CategoryService(Category,Course, AppErrors);
       this.wishlistService = new WishlistService(Wishlist, Course, AppErrors);
       this.cartService = new CartService(
         Cart,
