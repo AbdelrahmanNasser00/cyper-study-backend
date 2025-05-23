@@ -300,6 +300,25 @@ router.get("/", courseController.getAllCourses);
 
 /**
  * @swagger
+ * /api/courses/search:
+ *   get:
+ *     summary: Search for courses
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Search query
+ *     responses:
+ *       200:
+ *         description: List of matching courses
+ */
+router.get("/search", courseController.searchCourses);
+
+/**
+ * @swagger
  * /api/courses/{id}:
  *   get:
  *     summary: Get a course by ID
@@ -318,25 +337,6 @@ router.get("/", courseController.getAllCourses);
  *         description: Course not found
  */
 router.get("/:id", courseController.getCourseById);
-
-/**
- * @swagger
- * /api/courses/search:
- *   get:
- *     summary: Search for courses
- *     tags: [Courses]
- *     parameters:
- *       - in: query
- *         name: query
- *         required: false
- *         schema:
- *           type: string
- *         description: Search query
- *     responses:
- *       200:
- *         description: List of matching courses
- */
-router.get("/search", courseController.searchCourses);
 
 /**
  * @swagger

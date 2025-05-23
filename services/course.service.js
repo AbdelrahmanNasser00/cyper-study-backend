@@ -43,21 +43,21 @@ class CourseService {
     console.log(course);
     return course;
   }
-   async TopCourses() {
-  const limit = 5; 
-  return await this.CourseModel.findAll({
-    where: { isPublished: true },
-    order: [["averageRating", "DESC"]],
-    limit,
-    include: [
-      {
-        model: this.UserModel,
-        as: "instructor",
-        attributes: ["firstname", "lastname"],
-      },
-    ],
-  });
-}
+  async TopCourses() {
+    const limit = 5;
+    return await this.CourseModel.findAll({
+      where: { isPublished: true },
+      order: [["averageRating", "DESC"]],
+      limit,
+      include: [
+        {
+          model: this.UserModel,
+          as: "instructor",
+          attributes: ["firstname", "lastname"],
+        },
+      ],
+    });
+  }
   async getTopCourses(instructorId) {
     try {
       const courses = await this.CourseModel.findAll({
@@ -222,8 +222,9 @@ class CourseService {
   }
 
   async searchCourses(query) {
+    const searchTerm = typeof query === "string" ? query : query.query || "";
     const courses = await this.CourseModel.findAll({
-      where: { isPublished: true, title: { [Op.like]: `%${query}%` } },
+      where: { isPublished: true, title: { [Op.like]: `%${searchTerm}%` } },
       include: [
         {
           model: this.UserModel,
