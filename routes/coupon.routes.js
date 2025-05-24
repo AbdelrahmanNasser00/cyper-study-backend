@@ -201,4 +201,31 @@ router.delete(
   couponController.deleteCoupon
 );
 
+/**
+ * @swagger
+ * /api/coupons/{id}:
+ *   get:
+ *     summary: Get a coupon by ID
+ *     tags: [Coupons]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the coupon to retrieve
+ *     responses:
+ *       200:
+ *         description: Coupon retrieved successfully
+ *       404:
+ *         description: Coupon not found
+ */
+router.get(
+  "/:id",
+  authenticate,
+  authorize(["instructor"]),
+  validator.params(validateIDSchema),
+  couponController.getCouponById
+);
+
 module.exports = router;

@@ -47,6 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Course.hasMany(models.CartItems, { foreignKey: "courseId" });
       Course.hasOne(models.Earning, { foreignKey: "courseId", as: "earning" });
+      Course.hasMany(models.Enrollment, { foreignKey: "courseId" });
     }
   }
   Course.init(

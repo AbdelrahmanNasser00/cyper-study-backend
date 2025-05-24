@@ -112,12 +112,19 @@ class CourseService {
   }
 
   async getStudentEnrolledCourses(userId) {
+   
     const courses = await this.CourseModel.findAll({
       include: [
         {
           model: this.EnrollmentModel,
+           as: "Enrollments",
           where: { userId },
           attributes: ["progress", "createdAt"],
+        },
+        {
+          model: this.UserModel,
+          as: "instructor",
+          attributes: ["firstname", "lastname"],
         },
       ],
       attributes: ["id", "title", "description", "price"],
@@ -132,15 +139,17 @@ class CourseService {
         include: [
           {
             model: this.EnrollmentModel,
+            as: "Enrollments",
             where: { userId },
             attributes: ["progress", "createdAt"], // Enrollment details
           },
           {
             model: this.LessonModel,
-            attributes: ["id", "title", "order", "isPreview"], // Lesson details
+            attributes: ["id", "title", "order", "isPreview"], 
             include: [
               {
                 model: this.ProgressModel,
+               as: "progresses",
                 where: { userId },
                 required: false, // Include progress even if not completed
                 attributes: ["isCompleted", "completedAt"],

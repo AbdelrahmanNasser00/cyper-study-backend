@@ -12,7 +12,7 @@ class CouponService {
         code,
         courseId,
         expiresAt: {
-          [Op.gt]: new Date(), 
+          [Op.gt]: new Date(),
         },
         [Op.or]: [
           { usageLimit: null },
@@ -35,10 +35,13 @@ class CouponService {
 
   async createCoupon(data, instructorId) {
     const existingCoupon = await this.Coupon.findOne({
-      where: { code: data.code, courseId: data.courseId },
+      where: { code: data.code },
     });
     if (existingCoupon) {
-      throw new this.AppErrors("Coupon with this code already exists for this course", 400);
+      throw new this.AppErrors(
+        "Coupon with this code already exists ",
+        400
+      );
     }
     // Create the coupon if it doesn't exist
     const coupon = await this.Coupon.create({
@@ -73,12 +76,16 @@ class CouponService {
     };
   }
 
-  async getAllCoupons(courseId = null,instructorId, limit = 10, offset = 0) {
+  async getAllCoupons(courseId = null, instructorId, limit = 10, offset = 0) {
     // Filter by courseId if provided
     const whereClause = courseId ? { courseId } : {};
-whereClause.instructorId = instructorId;
+    whereClause.instructorId = instructorId;
     // Fetch all coupons with pagination
-    const coupons = await this.Coupon.findAll({ where: whereClause, limit, offset });
+    const coupons = await this.Coupon.findAll({
+      where: whereClause,
+      limit,
+      offset,
+    });
     if (!coupons) {
       throw new this.AppErrors("No coupons found", 404);
     }
@@ -103,6 +110,16 @@ whereClause.instructorId = instructorId;
     // Update the coupon with the provided data
     await coupon.update(data);
 
+    return coupon;
+  }
+
+  async getCouponById(id, instructorId) {
+    const coupon = await this.Coupon.findOne({
+      where: { id, instructorId },
+    });
+    if (!coupon) {
+      throw new this.AppErrors("Coupon not found", 404);
+    }
     return coupon;
   }
 }

@@ -13,7 +13,7 @@ class ProgressService {
     this.AppErrors = AppErrors;
   }
 
-  async markLessonCompleted({ userId, courseId, lessonId }) {
+  async markLessonCompleted( userId, courseId, lessonId ) {
     
     const lesson = await this.LessonModel.findByPk(lessonId);
     if (!lesson) {
@@ -23,16 +23,16 @@ class ProgressService {
     
     const [progress, created] = await this.ProgressModel.findOrCreate({
       where: { userId, courseId, lessonId },
-      defaults: { completed: true, completedAt: new Date() },
+      defaults: { isCompleted: true, completedAt: new Date() },
     });
 
     // If it already exists but not completed
-    if (!created && !progress.completed) {
-      progress.completed = true;
+    if (!created && !progress.isCompleted) {
+      progress.isCompleted = true;
       progress.completedAt = new Date();
       await progress.save();
     }
-    const { progressPercentage } = getCourseProgress(userId, courseId);
+    const { progressPercentage } = await this.getCourseProgress(userId, courseId);
     await this.EnrollmentModel.update(
       { progress: progressPercentage },
       { where: { userId, courseId } }
@@ -43,7 +43,7 @@ class ProgressService {
   async getCourseProgress(userId, courseId) {
     const totalLessons = await this.LessonModel.count({ where: { courseId } });
     const completedLessons = await this.ProgressModel.count({
-      where: { userId, courseId, completed: true },
+      where: { userId, courseId, isCompleted: true },
     });
 
     const progressPercentage =

@@ -78,6 +78,7 @@ class CourseController {
       const courses = await this.courseService.getStudentEnrolledCourses(
         req.user.id
       );
+   
       res.status(200).json(courses);
     } catch (error) {
       next(error);

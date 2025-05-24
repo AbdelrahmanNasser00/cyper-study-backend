@@ -93,13 +93,13 @@ class DIContainer {
         User,
         AppErrors
       );
-      this.ProgressService = new ProgressService({
+      this.ProgressService = new ProgressService(
         Progress,
         User,
         Lesson,
         Enrollment,
         AppErrors,
-      });
+      );
       this.paypalService = new PaypalService();
       this.StripeService = new StripeService();
       // this.FawryService=new FawryService(
