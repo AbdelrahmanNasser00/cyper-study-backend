@@ -40,7 +40,6 @@ class CourseService {
       instructorId,
     });
 
-    console.log(course);
     return course;
   }
   async TopCourses() {
@@ -163,7 +162,7 @@ class CourseService {
     }
   }
 
-  async getCourseById(courseId, userId = null) {
+  async getCourseById(courseId, userId) {
     const include = [
       {
         model: this.UserModel,

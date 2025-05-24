@@ -337,7 +337,6 @@ router.get("/search", courseController.searchCourses);
  *         description: Course not found
  */
 router.get("/:id", courseController.getCourseById);
-
 /**
  * @swagger
  * /api/courses/category/{category}:

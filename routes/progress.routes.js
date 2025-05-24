@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { progressController } = require("../config/DIContainer");
+const { ProgressController } = require("../config/DIContainer");
 const authenticate = require("../middlewares/authenticate.middleware");
 
 /**
@@ -53,7 +53,7 @@ const authenticate = require("../middlewares/authenticate.middleware");
 router.post(
   "/mark-completed",
   authenticate,
-  progressController.markLessonCompleted
+  ProgressController.markLessonCompleted
 );
 
 /**
@@ -97,7 +97,7 @@ router.post(
 router.get(
   "/course-progress/:courseId",
   authenticate,
-  progressController.getCourseProgress
+  ProgressController.getCourseProgress
 );
 
 module.exports = router;
