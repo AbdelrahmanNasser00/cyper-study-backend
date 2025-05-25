@@ -132,28 +132,23 @@ class CourseService {
   }
 
   async getStudentEnrolledCourseById(userId, courseId) {
-    try {
-      const course = await this.CourseModel.findOne({
-        where: { id: courseId },
-        include: [
-          {
-            model: this.EnrollmentModel,
-            where: { userId },
-            attributes: ["id"], // Only check if enrollment exists
-            required: true, // This makes it return null if not enrolled
-          },
-        ],
-      });
+    const course = await this.CourseModel.findOne({
+      where: { id: courseId },
+      include: [
+        {
+          model: this.EnrollmentModel,
+          where: { userId },
+          attributes: ["id"], // Only check if enrollment exists
+          required: true, // This makes it return null if not enrolled
+        },
+      ],
+    });
 
-      if (!course) {
-        throw new this.AppErrors("Course not found or not enrolled", 404);
-      }
-
-      return course;
-    } catch (error) {
-      console.error("Error in getStudentEnrolledCourseById:", error.message);
-      throw new this.AppErrors("Failed to fetch enrolled course details", 500);
+    if (!course) {
+      throw new this.AppErrors("Course not found or not enrolled", 404);
     }
+
+    return course;
   }
 
   async getCourseById(courseId, userId) {
