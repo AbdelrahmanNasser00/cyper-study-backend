@@ -72,7 +72,7 @@ class DIContainer {
         AppErrors,
         this.EmailService
       );
-      this.profileService = new profileService(User, AppErrors);
+      this.profileService = new profileService(User,Course,Enrollment, AppErrors);
       this.courseService = new CourseService(
         Course,
         User,
