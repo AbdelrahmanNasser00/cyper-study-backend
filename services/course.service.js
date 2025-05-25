@@ -152,49 +152,62 @@ class CourseService {
   }
 
   async getCourseById(courseId, userId) {
-    const include = [
-      {
-        model: this.UserModel,
-        as: "instructor",
-        attributes: ["firstname", "lastname"],
-      },
-    ];
-    if (userId) {
-      include.push({
-        model: this.EnrollmentModel,
-        where: { studentId: userId },
-        attributes: ["courseId", "progress", "enrolledAt"],
-      });
-    }
-    const course = await this.CourseModel.findByPk(courseId, {
-      include,
+  const include = [
+    {
+      model: this.UserModel,
+      as: "instructor",
+      attributes: ["firstname", "lastname"],
+    },
+  ];
+
+  if (userId) {
+    include.push({
+      model: this.EnrollmentModel,
+      where: { studentId: userId },
+      attributes: ["courseId", "progress", "enrolledAt"],
+      required: false, 
     });
-    if (!course) {
-      throw new this.AppErrors("Course not found", 404);
-    }
-
-    if (
-      !course.isPublished &&
-      (!userId || !course.Enrollments || course.Enrollments.length === 0)
-    ) {
-      throw new this.AppErrors("Course not available", 403);
-    }
-
-    let lessons = [];
-    if (userId && course.Enrollments && course.Enrollments.length > 0) {
-      lessons = await this.LessonModel.findAll({
-        where: { courseId },
-        order: [["order", "ASC"]],
-      });
-    } else {
-      lessons = await this.LessonModel.findAll({
-        where: { courseId, isPreview: true },
-        order: [["order", "ASC"]],
-      });
-    }
-    course.dataValues.lessons = lessons;
-    return course;
   }
+
+  const course = await this.CourseModel.findByPk(courseId, {
+    include,
+  });
+
+  if (!course) {
+    throw new this.AppErrors("Course not found", 404);
+  }
+
+  const isEnrolled = course.Enrollments && course.Enrollments.length > 0;
+
+  if (!course.isPublished && (!userId || !isEnrolled)) {
+    throw new this.AppErrors("Course not available", 403);
+  }
+
+  let lessons = await this.LessonModel.findAll({
+    where: { courseId },
+    order: [["order", "ASC"]],
+  });
+
+  lessons = lessons.map((lesson) => {
+    const l = lesson.toJSON();
+    if (isEnrolled) {
+      return l; 
+    } else if (l.isPreview) {
+      return l; 
+    } else {
+      return {
+        title: l.title,
+        duration: l.duration,
+        order: l.order,
+        isPreview: l.isPreview,
+      }; 
+    }
+  });
+
+  course.dataValues.lessons = lessons;
+  return course;
+}
+
   async getAllCourses() {
     const courses = await this.CourseModel.findAll({
       where: { isPublished: true },
