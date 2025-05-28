@@ -110,6 +110,7 @@ class CouponService {
     // Update the coupon with the provided data
     await coupon.update(data);
 
+
     return coupon;
   }
 

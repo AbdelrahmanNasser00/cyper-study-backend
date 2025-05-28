@@ -13,7 +13,12 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    cb(null, `user_${Date.now()}${ext}`);
+    const now = new Date();
+    const dateStr = now
+      .toISOString()
+      .replace(/:/g, "-") 
+      .replace(/\..+/, ""); 
+    cb(null, `user_${dateStr}_${Date.now()}${ext}`);
   },
 });
 
