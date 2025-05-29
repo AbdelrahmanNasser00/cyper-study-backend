@@ -16,18 +16,13 @@ class LessonService {
     }
   
     async getLessonsByCourse(courseId, limit, offset) {
-      const lessons = await this.LessonModel.findAndCountAll({
+      const lessons = await this.LessonModel.findAll({
         where: { courseId },
         order: [["order", "ASC"]],
-        limit: parseInt(limit),
-        offset: parseInt(offset),
+       
       });
   
-      return {
-        total: lessons.count,
-        pageCount: Math.ceil(lessons.count / limit),
-        lessons: lessons.rows,
-      };
+      return lessons;
     }
   
     async createLesson(data) {

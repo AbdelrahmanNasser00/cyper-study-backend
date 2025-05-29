@@ -47,7 +47,7 @@ class ProfileController {
           .status(400)
           .json({ message: "Profile picture is required." });
       }
-      const profilePicture = `${process.env.SERVER_URL}/uploads/profilePictures/${req.file.filename} }`;
+      const profilePicture = `${process.env.SERVER_URL}/uploads/profilePictures/${req.file.filename} `;
       const result = await this.profileService.updateProfilePicture(
         userId,
         profilePicture

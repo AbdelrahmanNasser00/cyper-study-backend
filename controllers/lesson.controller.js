@@ -21,6 +21,7 @@ class LessonController {
       const lessons = await this.lessonService.getLessonsByCourse(courseId, limit, offset);
 
       res.status(200).json(lessons);
+      console.log(lessons);
     } catch (err) {
       next(err);
     }
