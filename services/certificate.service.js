@@ -148,7 +148,7 @@ class certificateService {
         },
         {
           model: this.CourseModel,
-          attributes: ["id", "title", "description"],
+          attributes: ["id", "title", "thumbnail", "description"],
           include: [
             {
               model: this.UserModel,
