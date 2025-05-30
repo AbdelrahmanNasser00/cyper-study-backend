@@ -9,13 +9,13 @@ class EnrollmentController {
   // Create an order
   createOrder = async (req, res, next) => {
     try {
-      const { courseId, couponCode, provider } = req.body; // provider: "paypal", "stripe", "fawry"
+      const { courseIds, coupons, provider } = req.body; // provider: "paypal", "stripe", "fawry"
       const userId = req.user.id;
 
       const { approvalUrl, orderId } = await this.enrollmentService.enroll(
         userId,
-        courseId,
-        couponCode,
+        courseIds,
+        coupons,
         provider
       );
       res.status(201).json({ message: "Order created", approvalUrl, orderId });

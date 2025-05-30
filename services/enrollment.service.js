@@ -37,65 +37,93 @@ class EnrollmentService {
     return enrollments;
   }
 
-  async enroll(userId, courseId, couponCode, provider) {
+  async enroll(userId, courseIds, coupons, provider) {
     const paymentService = this.paymentFactory.getPaymentService(provider);
 
     return await sequelize.transaction(async (t) => {
-      const alreadyEnrolled = await this.enrollment.findOne({
-        where: { userId, courseId },
+      // 1. Prevent duplicate enrollments
+      const alreadyEnrolled = await this.enrollment.findAll({
+        where: { userId, courseId: courseIds },
         transaction: t,
       });
-
-      if (alreadyEnrolled) {
+      if (alreadyEnrolled.length > 0) {
         throw new this.AppErrors(
-          "User is already enrolled in this course.",
+          "User is already enrolled in one or more selected courses.",
           400
         );
       }
 
-      const course = await this.course.findByPk(courseId, { transaction: t });
-      if (!course) {
-        throw new this.AppErrors("Course not found", 404);
+      // 2. Fetch all courses
+      const courses = await this.course.findAll({
+        where: { id: courseIds },
+        transaction: t,
+      });
+      if (courses.length !== courseIds.length) {
+        throw new this.AppErrors("One or more courses not found", 404);
       }
 
-      let finalPrice = course.price;
+      // 3. Calculate total price (apply coupon if needed)
+      let totalPrice = 0;
+      const coursePrices = {};
+      for (const course of courses) {
+        let price = Number(course.price);
 
-      if (couponCode) {
-        const coupon = await this.CouponService.validateCoupon(
-          couponCode,
-          courseId
-        );
-        if (coupon.discount) {
-          finalPrice = finalPrice - (finalPrice * coupon.discount) / 100;
+        
+        let couponCode = null;
+        if (Array.isArray(coupons)) {
+          
+          const found = coupons.find((c) => c.courseId == course.id);
+          couponCode = found ? found.couponCode : null;
+        } else if (typeof coupons === "object" && coupons !== null) {
+          
+          couponCode = coupons[course.id];
         }
-      }
 
+        if (couponCode) {
+          const coupon = await this.CouponService.validateCoupon(
+            couponCode,
+            course.id
+          );
+          if (coupon && coupon.discount) {
+            price = price - (price * coupon.discount) / 100;
+          }
+        }
+
+        price = Number(price.toFixed(2));
+        coursePrices[course.id] = price;
+        totalPrice += price;
+      }
+      totalPrice = Number(totalPrice.toFixed(2));
+
+      // 4. Create the order
       const order = await this.order.create(
         {
           userId,
-          totalAmount: finalPrice,
+          totalAmount: totalPrice,
           status: "pending",
           provider: provider,
         },
         { transaction: t }
       );
 
-      await this.orderItem.create(
-        {
-          orderId: order.id,
-          courseId,
-          price: finalPrice,
-        },
-        { transaction: t }
-      );
+      // 5. Create order items and enrollments
+      for (const courseId of courseIds) {
+        await this.orderItem.create(
+          {
+            orderId: order.id,
+            courseId,
+            price: coursePrices[courseId],
+          },
+          { transaction: t }
+        );
+      }
 
+      // 6. Payment
       const { approvalUrl, Token } = await paymentService.createOrder(
-        finalPrice,
-        order.id,
-        
+        totalPrice,
+        order.id
       );
-
-      order.paymentToken =Token;
+      order.paymentToken = Token;
       await order.save({ transaction: t });
 
       return {
@@ -130,51 +158,55 @@ class EnrollmentService {
       order.status = "paid";
       await order.save({ transaction: t });
 
-      // Get the order item
-      const orderItem = await this.orderItem.findOne({
+      // Get all order items for this order
+      const orderItems = await this.orderItem.findAll({
         where: { orderId: order.id },
         transaction: t,
       });
 
-      // Create the enrollment
-      const enrollmentData = {
-        userId: order.userId,
-        courseId: orderItem.courseId,
-      };
+      for (const item of orderItems) {
+        // Create the enrollment for each course
+        await this.enrollment.create(
+          {
+            userId: order.userId,
+            courseId: item.courseId,
+            progress: 0,
+          },
+          { transaction: t }
+        );
 
-      await this.enrollment.create(enrollmentData, { transaction: t });
+        // Fetch the course to get the instructor ID
+        const course = await this.course.findByPk(item.courseId, {
+          attributes: ["id", "instructorId"],
+          transaction: t,
+        });
 
-      // Fetch the course to get the instructor ID
-      const course = await this.course.findByPk(orderItem.courseId, {
-        attributes: ["id", "instructorId"],
-        transaction: t,
-      });
+        if (!course) {
+          throw new this.AppErrors("Course not found", 404);
+        }
 
-      if (!course) {
-        throw new this.AppErrors("Course not found", 404);
-      }
+        // Calculate the instructor's earnings (e.g., 80% of the course price)
+        const instructorEarnings = item.price * 0.8;
 
-      // Calculate the instructor's earnings (e.g., 80% of the course price)
-      const instructorEarnings = orderItem.price * 0.8;
+        // Update or create the earning record for the instructor
+        const [earning] = await this.earning.findOrCreate({
+          where: {
+            instructorId: course.instructorId,
+            courseId: course.id,
+          },
+          defaults: {
+            instructorId: course.instructorId,
+            courseId: course.id,
+            totalEarnings: instructorEarnings,
+          },
+          transaction: t,
+        });
 
-      // Update or create the earning record for the instructor
-      const [earning] = await this.earning.findOrCreate({
-        where: {
-          instructorId: course.instructorId,
-          courseId: course.id,
-        },
-        defaults: {
-          instructorId: course.instructorId,
-          courseId: course.id,
-          totalEarnings: instructorEarnings,
-        },
-        transaction: t,
-      });
-
-      if (!earning.isNewRecord) {
-        // If the earning record already exists, update it
-        earning.totalEarnings += instructorEarnings;
-        await earning.save({ transaction: t });
+        if (!earning.isNewRecord) {
+          // If the earning record already exists, update it
+          earning.totalEarnings += instructorEarnings;
+          await earning.save({ transaction: t });
+        }
       }
 
       return paymentResult;

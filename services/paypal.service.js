@@ -31,7 +31,7 @@ class PaypalService extends PaymentService {
             reference_id: orderId.toString(),
             amount: {
               currency_code: "USD",
-              value: finalPrice.toFixed(2), // Ensure the price is a string with 2 decimal places
+              value: finalPrice, 
             },
           },
         ],
