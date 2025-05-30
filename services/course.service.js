@@ -126,7 +126,7 @@ class CourseService {
           attributes: ["firstname", "lastname"],
         },
       ],
-      attributes: ["id", "title", "description", "price"],
+    
     });
     return courses;
   }
