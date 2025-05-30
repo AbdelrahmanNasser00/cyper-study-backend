@@ -74,7 +74,7 @@ router.get(
 
 /**
  * @swagger
- * /certificates/my-certificates:
+ * /certificate/my-certificates:
  *   get:
  *     summary: Get all certificates for the logged-in student
  *     tags: [Certificates]
@@ -99,7 +99,7 @@ router.get(
 
 /**
  * @swagger
- * /certificates/{id}:
+ * /certificate/{id}:
  *   get:
  *     summary: Get a certificate by its ID
  *     tags: [Certificates]
@@ -129,7 +129,7 @@ router.get(
 
 /**
  * @swagger
- * /certificates/{id}:
+ * /certificate/{id}:
  *   delete:
  *     summary: Delete a certificate by its ID
  *     tags: [Certificates]
