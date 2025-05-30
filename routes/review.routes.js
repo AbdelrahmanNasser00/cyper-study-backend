@@ -97,7 +97,7 @@ router.post(
 router.get(
   "/:id",
   authenticate,
-  authorize(["student"]),
+  authorize(["student","instructor", "admin"]),
   reviewController.getReviews
 );
 
