@@ -22,7 +22,7 @@ class EnrollmentService {
     this.orderItem = OrderItem;
     this.earning = Earning;
     this.cartItems = CartItems;
-    this.cart=Cart
+    this.cart = Cart;
   }
   // Get all enrollments for a user
   async getAllEnrollments(userId) {
@@ -72,14 +72,11 @@ class EnrollmentService {
       for (const course of courses) {
         let price = Number(course.price);
 
-        
         let couponCode = null;
         if (Array.isArray(coupons)) {
-          
           const found = coupons.find((c) => c.courseId == course.id);
           couponCode = found ? found.couponCode : null;
         } else if (typeof coupons === "object" && coupons !== null) {
-          
           couponCode = coupons[course.id];
         }
 
@@ -219,7 +216,10 @@ class EnrollmentService {
         transaction: t,
       });
 
-      const userCart = await this.cart.findOne({ where: { userId: order.userId }, transaction: t });
+      const userCart = await this.cart.findOne({
+        where: { userId: order.userId },
+        transaction: t,
+      });
       if (userCart) {
         await this.cartItems.destroy({
           where: { cartId: userCart.id },

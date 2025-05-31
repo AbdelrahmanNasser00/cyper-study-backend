@@ -52,7 +52,7 @@ class ProfileController {
         userId,
         profilePicture
       );
-      res.json( result);
+      res.json(result);
     } catch (err) {
       next(err);
     }

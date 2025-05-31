@@ -1,5 +1,5 @@
 const Stripe = require("stripe");
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY); 
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 class StripeService {
   async createOrder(amount, orderId) {
     const session = await stripe.checkout.sessions.create({
@@ -17,8 +17,8 @@ class StripeService {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.BASE_URL}/api/orders/complete-order?session_id={CHECKOUT_SESSION_ID}`, // Redirect after successful payment
-      cancel_url: `${process.env.BASE_URL}/api/orders/cancel-order`, // Redirect after canceled payment
+      success_url: `${process.env.FRONTEND_URL || "http://localhost:5173"}/payment-success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId}`,
+      cancel_url: `${process.env.FRONTEND_URL || "http://localhost:5173"}/payment-cancel?order_id=${orderId}`,
       metadata: {
         orderId,
       },
