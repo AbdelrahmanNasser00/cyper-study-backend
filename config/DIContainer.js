@@ -142,7 +142,9 @@ class DIContainer {
         this.PaymentFactory,
         Order,
         OrderItem,
-        Earning
+        Earning,
+        CartItems,
+        Cart
       );
 
       // Controllers

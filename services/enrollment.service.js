@@ -9,7 +9,9 @@ class EnrollmentService {
     paymentFactory,
     Order,
     OrderItem,
-    Earning
+    Earning,
+    CartItems,
+    Cart
   ) {
     this.enrollment = Enrollment;
     this.course = Course;
@@ -19,6 +21,8 @@ class EnrollmentService {
     this.order = Order;
     this.orderItem = OrderItem;
     this.earning = Earning;
+    this.cartItems = CartItems;
+    this.cart=Cart
   }
   // Get all enrollments for a user
   async getAllEnrollments(userId) {
@@ -208,6 +212,25 @@ class EnrollmentService {
           await earning.save({ transaction: t });
         }
       }
+
+      // Clear cart items for the enrolled courses
+      await this.cartItems.destroy({
+        where: { courseId: orderItems.map((item) => item.courseId) },
+        transaction: t,
+      });
+
+      const userCart = await this.cart.findOne({ where: { userId: order.userId }, transaction: t });
+      if (userCart) {
+        await this.cartItems.destroy({
+          where: { cartId: userCart.id },
+          transaction: t,
+        });
+      }
+      // Clear the user's cart
+      await this.cart.destroy({
+        where: { userId: order.userId },
+        transaction: t,
+      });
 
       return paymentResult;
     });
