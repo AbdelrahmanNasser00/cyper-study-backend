@@ -13,14 +13,12 @@ class ProgressService {
     this.AppErrors = AppErrors;
   }
 
-  async markLessonCompleted( userId, courseId, lessonId ) {
-    
+  async markLessonCompleted(userId, courseId, lessonId) {
     const lesson = await this.LessonModel.findByPk(lessonId);
     if (!lesson) {
       throw new Error("Lesson not found");
     }
 
-    
     const [progress, created] = await this.ProgressModel.findOrCreate({
       where: { userId, courseId, lessonId },
       defaults: { isCompleted: true, completedAt: new Date() },
@@ -32,7 +30,10 @@ class ProgressService {
       progress.completedAt = new Date();
       await progress.save();
     }
-    const { progressPercentage } = await this.getCourseProgress(userId, courseId);
+    const { progressPercentage } = await this.getCourseProgress(
+      userId,
+      courseId
+    );
     await this.EnrollmentModel.update(
       { progress: progressPercentage },
       { where: { userId, courseId } }
@@ -42,9 +43,15 @@ class ProgressService {
 
   async getCourseProgress(userId, courseId) {
     const totalLessons = await this.LessonModel.count({ where: { courseId } });
-    const completedLessons = await this.ProgressModel.count({
+
+    const completedProgresses = await this.ProgressModel.findAll({
       where: { userId, courseId, isCompleted: true },
+      attributes: ["lessonId"],
+      raw: true,
     });
+
+    const completedLessons = completedProgresses.length;
+    const completedLessonIds = completedProgresses.map((p) => p.lessonId);
 
     const progressPercentage =
       totalLessons === 0
@@ -55,6 +62,7 @@ class ProgressService {
       totalLessons,
       completedLessons,
       progressPercentage,
+      completedLessonIds,
     };
   }
 }
