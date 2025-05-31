@@ -30,11 +30,16 @@ class EnrollmentController {
     try {
       const { token, session_id } = req.query;
       let paymentToken = token || session_id; // For PayPal
-    
-      const orderDetails = await this.enrollmentService.completeOrder(paymentToken );
+
+      const orderDetails =
+        await this.enrollmentService.completeOrder(paymentToken);
       console.log(orderDetails);
-      res.status(200).json({ message: "Payment captured", orderDetails });
+
+      return res.redirect(
+        `http://localhost:5173/payment-success?status=success&order_id=${orderDetails.id}`
+      );
     } catch (error) {
+      return res.redirect(`http://localhost:5173/payment-failed?status=failed`);
       next(error);
     }
   };

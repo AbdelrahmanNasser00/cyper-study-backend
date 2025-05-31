@@ -8,7 +8,7 @@ class PaypalService extends PaymentService {
   }
   async generateAccessToken() {
     const response = await axios({
-      url:  this.baseUrl + "/v1/oauth2/token",
+      url: this.baseUrl + "/v1/oauth2/token",
       method: "post",
       data: "grant_type=client_credentials",
       auth: {
@@ -31,7 +31,7 @@ class PaypalService extends PaymentService {
             reference_id: orderId.toString(),
             amount: {
               currency_code: "USD",
-              value: finalPrice, 
+              value: finalPrice,
             },
           },
         ],
@@ -53,16 +53,20 @@ class PaypalService extends PaymentService {
         data: requestData,
       });
 
-      const approvalUrl = response.data.links.find((link) => link.rel === "approve").href;
+      const approvalUrl = response.data.links.find(
+        (link) => link.rel === "approve"
+      ).href;
       const Token = response.data.id;
-  
-     
+
       return {
         approvalUrl,
         Token,
       };
     } catch (error) {
-      console.error("Error creating PayPal order:", error.response?.data || error.message);
+      console.error(
+        "Error creating PayPal order:",
+        error.response?.data || error.message
+      );
       throw new Error("Failed to create PayPal order.");
     }
   }
@@ -71,7 +75,8 @@ class PaypalService extends PaymentService {
     const accessToken = await this.generateAccessToken();
 
     const response = await axios({
-      url: process.env.PAYPAL_BASE_URL + `/v2/checkout/orders/${orderId}/capture`,
+      url:
+        process.env.PAYPAL_BASE_URL + `/v2/checkout/orders/${orderId}/capture`,
       method: "post",
       headers: {
         "Content-Type": "application/json",
