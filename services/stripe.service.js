@@ -32,12 +32,15 @@ class StripeService {
 
   async capturePayment(sessionId) {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const orderId = session.metadata.orderId;
+
     if (session.payment_status !== "paid") {
       return { status: "PENDING" };
     }
 
     return {
       status: "COMPLETED",
+      id: orderId,
       paymentIntent: session.payment_intent,
     };
   }
