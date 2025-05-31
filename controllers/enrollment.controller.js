@@ -46,7 +46,7 @@ class EnrollmentController {
 
   // Cancel an order
   cancelOrder = async (req, res, next) => {
-    res.redirect(`${process.env.FRONT_URL}/failure.html`);
+   res.redirect(`http://localhost:5173/payment-failed?status=failed`);
   };
 }
 
