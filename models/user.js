@@ -37,11 +37,6 @@ module.exports = (sequelize, DataTypes) => {
         otherKey: "courseId",
       });
       User.belongsToMany(models.Course, {
-        through: models.Review,
-        foreignKey: "userId",
-      });
-
-      User.belongsToMany(models.Course, {
         through: models.Certificate,
         foreignKey: "userId",
       });
